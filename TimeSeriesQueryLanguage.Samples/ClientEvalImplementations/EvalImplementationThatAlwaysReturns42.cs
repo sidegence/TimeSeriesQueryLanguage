@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using TimeSeriesQueryLanguage.Enums;
 using TimeSeriesQueryLanguage.Interfaces;
 
-namespace TimeSeriesQueryLanguage.Tests.ClientEvalImplementations
+namespace TimeSeriesQueryLanguage.Samples.ClientEvalImplementations
 {
     public class EvalImplementationThatAlwaysReturns42 : ITimeSeriesQueryLanguageContext
     {
-        public async Task<decimal> Eval(AggFn aggFn, AggCl aggCl = AggCl.Price, AggTs aggTsSlideTo = AggTs.M0, AggTs aggTsFrame = AggTs.M0, int i = 0)
+        public async Task<decimal> Eval(AggFn aggFn, AggCl aggCl = AggCl.Cl0, AggTs aggTsSlideTo = AggTs.M0, AggTs aggTsFrame = AggTs.M0, int i = 0)
         {
             return await Task.FromResult(42);
         }

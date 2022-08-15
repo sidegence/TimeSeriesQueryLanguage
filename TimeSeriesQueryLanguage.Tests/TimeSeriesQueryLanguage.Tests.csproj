@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TimeSeriesQueryLanguage.Samples\TimeSeriesQueryLanguage.Samples.csproj" />
     <ProjectReference Include="..\TimeSeriesQueryLanguage\TimeSeriesQueryLanguage.csproj" />
   </ItemGroup>
 

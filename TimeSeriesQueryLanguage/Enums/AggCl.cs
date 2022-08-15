@@ -8,6 +8,6 @@ namespace TimeSeriesQueryLanguage.Enums
 {
     public enum AggCl
     {
-        Price = 0,
+        Cl0 = 0, Cl1, Cl2, Cl3, Cl4, Cl5, Cl6, Cl7, Cl8, Cl9,
     }
 }

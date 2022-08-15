@@ -61,7 +61,7 @@ namespace TimeSeriesQueryLanguage.Core
                     if (_tokenizer.Token == Token.OpenParens)
                     {
                         _tokenizer.NextToken();
-                        AggFn aggFn = AggFn.Avg; AggCl aggCl = AggCl.Price; AggTs aggTsSlideTo = AggTs.M0; AggTs aggTsFrame = AggTs.M1;
+                        AggFn aggFn = AggFn.Avg; AggCl aggCl = AggCl.Cl0; AggTs aggTsSlideTo = AggTs.M0; AggTs aggTsFrame = AggTs.M1;
                         while (_tokenizer.Token != Token.CloseParens)
                         {
                             switch (_tokenizer.Token)
