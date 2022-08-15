@@ -1,2 +1,1 @@
-# CryptoAlerts
- 
+TimeSeries Query Language
