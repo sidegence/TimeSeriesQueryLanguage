@@ -35,18 +35,18 @@ Console.WriteLine("Eval(AggFn.Cnt) ...: " + await evalImplementationOnEFInMemory
 Console.WriteLine("Eval(AggFn.Fst, AggCl.Cl0) ...: " + await evalImplementationOnEFInMemory.Eval(AggFn.Fst, AggCl.Cl0));
 Console.WriteLine("Eval(AggFn.Lst, AggCl.Cl0) ...: " + await evalImplementationOnEFInMemory.Eval(AggFn.Lst, AggCl.Cl0));
 Console.WriteLine("Eval(AggFn.Avg, AggCl.Cl0) ...: " + await evalImplementationOnEFInMemory.Eval(AggFn.Avg, AggCl.Cl0));
-Console.WriteLine("[first price last 5 minutes] => Eval(ag(Fst,Cl0,To.M0,Fr.M5)) ...: " + await evalImplementationOnEFInMemory.Eval("ag(Fst,Cl0,To.M0,Fr.M5)"));
-Console.WriteLine("[last  price last 5 minutes] => Eval(ag(Lst,Cl0,To.M0,Fr.M5)) ...: " + await evalImplementationOnEFInMemory.Eval("ag(Lst,Cl0,To.M0,Fr.M5)"));
-Console.WriteLine("[delta price last 5 minutes] => Eval(ag(Dlt,Cl0,To.M0,Fr.M5)) ...: " + await evalImplementationOnEFInMemory.Eval("ag(Dlt,Cl0,To.M0,Fr.M5)"));
-Console.WriteLine("[first price second 5 minutes window] => Eval(ag(Fst,Cl0,To.M5,Fr.M5)) ...: " + await evalImplementationOnEFInMemory.Eval("ag(Fst,Cl0,To.M5,Fr.M5)"));
-Console.WriteLine("[last  price second 5 minutes window] => Eval(ag(Lst,Cl0,To.M5,Fr.M5)) ...: " + await evalImplementationOnEFInMemory.Eval("ag(Lst,Cl0,To.M5,Fr.M5)"));
-Console.WriteLine("[delta price second 5 minutes window] => Eval(ag(Dlt,Cl0,To.M5,Fr.M5)) ...: " + await evalImplementationOnEFInMemory.Eval("ag(Dlt,Cl0,To.M5,Fr.M5)"));
-Console.WriteLine("[are last two 5 mins windows V shaped ?] => Eval(&(<(ag(Dlt,Cl0,To.M0,Fr.M5),0),>(ag(Dlt,Cl0,To.M5,Fr.M5),0))) ...: " + await evalImplementationOnEFInMemory.Eval("&(<(ag(Dlt,Cl0,To.M0,Fr.M5),0),>(ag(Dlt,Cl0,To.M5,Fr.M5),0))"));
-Console.WriteLine("[are last two 5 mins windows M shaped ?] => Eval(&(>(ag(Dlt,Cl0,To.M0,Fr.M5),0),<(ag(Dlt,Cl0,To.M5,Fr.M5),0))) ...: " + await evalImplementationOnEFInMemory.Eval("&(>(ag(Dlt,Cl0,To.M0,Fr.M5),0),<(ag(Dlt,Cl0,To.M5,Fr.M5),0))"));
-Console.WriteLine("[current price to MinMax Price position last 05m] => Eval(ag(MMP,Cl0,To.M0,Fr.M5)) ...: " + await evalImplementationOnEFInMemory.Eval("ag(MMP,Cl0,To.M0,Fr.M5)"));
-Console.WriteLine("[current price to MinMax Price position last 15m] => Eval(ag(MMP,Cl0,To.M0,Fr.M15)) ...: " + await evalImplementationOnEFInMemory.Eval("ag(MMP,Cl0,To.M0,Fr.M15)"));
-Console.WriteLine("[current price to MinMax Price position last 01h] => Eval(ag(MMP,Cl0,To.M0,Fr.H1)) ...: " + await evalImplementationOnEFInMemory.Eval("ag(MMP,Cl0,To.M0,Fr.H1)"));
-Console.WriteLine("[current price to MinMax Price position last 24h] => Eval(ag(MMP,Cl0,To.M0,Fr.D1)) ...: " + await evalImplementationOnEFInMemory.Eval("ag(MMP,Cl0,To.M0,Fr.D1)"));
+Console.WriteLine("[First Price last 5 minutes] => Eval(ag(Fst,Cl0,To.M0,Fr.M5)) ...: " + await evalImplementationOnEFInMemory.Eval("ag(Fst,Cl0,To.M0,Fr.M5)"));
+Console.WriteLine("[Last  Price last 5 minutes] => Eval(ag(Lst,Cl0,To.M0,Fr.M5)) ...: " + await evalImplementationOnEFInMemory.Eval("ag(Lst,Cl0,To.M0,Fr.M5)"));
+Console.WriteLine("[Delta Price last 5 minutes] => Eval(ag(Dlt,Cl0,To.M0,Fr.M5)) ...: " + await evalImplementationOnEFInMemory.Eval("ag(Dlt,Cl0,To.M0,Fr.M5)"));
+Console.WriteLine("[First Price second 5 minutes window] => Eval(ag(Fst,Cl0,To.M5,Fr.M5)) ...: " + await evalImplementationOnEFInMemory.Eval("ag(Fst,Cl0,To.M5,Fr.M5)"));
+Console.WriteLine("[Last  Price second 5 minutes window] => Eval(ag(Lst,Cl0,To.M5,Fr.M5)) ...: " + await evalImplementationOnEFInMemory.Eval("ag(Lst,Cl0,To.M5,Fr.M5)"));
+Console.WriteLine("[Delta Price second 5 minutes window] => Eval(ag(Dlt,Cl0,To.M5,Fr.M5)) ...: " + await evalImplementationOnEFInMemory.Eval("ag(Dlt,Cl0,To.M5,Fr.M5)"));
+Console.WriteLine("[Are last two 5 mins windows V shaped ?] => Eval(&(<(ag(Dlt,Cl0,To.M0,Fr.M5),0),>(ag(Dlt,Cl0,To.M5,Fr.M5),0))) ...: " + await evalImplementationOnEFInMemory.Eval("&(<(ag(Dlt,Cl0,To.M0,Fr.M5),0),>(ag(Dlt,Cl0,To.M5,Fr.M5),0))"));
+Console.WriteLine("[Are last two 5 mins windows M shaped ?] => Eval(&(>(ag(Dlt,Cl0,To.M0,Fr.M5),0),<(ag(Dlt,Cl0,To.M5,Fr.M5),0))) ...: " + await evalImplementationOnEFInMemory.Eval("&(>(ag(Dlt,Cl0,To.M0,Fr.M5),0),<(ag(Dlt,Cl0,To.M5,Fr.M5),0))"));
+Console.WriteLine("[Current Price to MinMax Price position last 05m] => Eval(ag(MMP,Cl0,To.M0,Fr.M5)) ...: " + await evalImplementationOnEFInMemory.Eval("ag(MMP,Cl0,To.M0,Fr.M5)"));
+Console.WriteLine("[Current Price to MinMax Price position last 15m] => Eval(ag(MMP,Cl0,To.M0,Fr.M15)) ...: " + await evalImplementationOnEFInMemory.Eval("ag(MMP,Cl0,To.M0,Fr.M15)"));
+Console.WriteLine("[Current Price to MinMax Price position last 01h] => Eval(ag(MMP,Cl0,To.M0,Fr.H1)) ...: " + await evalImplementationOnEFInMemory.Eval("ag(MMP,Cl0,To.M0,Fr.H1)"));
+Console.WriteLine("[Current Price to MinMax Price position last 24h] => Eval(ag(MMP,Cl0,To.M0,Fr.D1)) ...: " + await evalImplementationOnEFInMemory.Eval("ag(MMP,Cl0,To.M0,Fr.D1)"));
 
 Console.WriteLine();
 
