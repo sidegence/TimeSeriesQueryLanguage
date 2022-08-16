@@ -26,24 +26,9 @@ Console.WriteLine("Eval(AggFn.Lst, AggCl.Cl0) ...: " + await evalImplementationO
 Console.WriteLine("Eval(AggFn.Avg, AggCl.Cl0) ...: " + await evalImplementationOnAJsonStore.Eval(AggFn.Avg, AggCl.Cl0));
 Console.WriteLine();
 
-var services = new ServiceCollection();
-services.AddDbContext<SampleDbContext>(opt => opt.UseInMemoryDatabase(databaseName: "InMemoryDb"));
-var serviceProvider = services.BuildServiceProvider();
-var sampleDbContext = serviceProvider.GetService<SampleDbContext>();
+SampleDbContext? sampleDbContext;
+await PopulateDb(60 * 60 * 24);
 if (sampleDbContext == null) return;
-var price = 100.0m;
-var rnd = new Random();
-for (int i = 1; i <= 60 * 60 * 24; i++)
-{
-    await sampleDbContext.Tickers.AddAsync(
-        new Ticker() 
-        { 
-            id = i, ts = DateTime.UtcNow.AddSeconds(-(i-1)), price = price, qty = 0.1m + (decimal)(rnd.NextDouble()), side = rnd.NextDouble() < 0.5 ? "b" : "s"
-        });
-    price += (rnd.NextDouble() < 0.5 ? 1 : -1 ) * (decimal)(rnd.NextDouble());
-}
-await sampleDbContext.SaveChangesAsync();
-
 Console.WriteLine("EvalImplementationOnEFInMemory");
 var evalImplementationOnEFInMemory = new EvalImplementationOnEFInMemory(sampleDbContext);
 Console.WriteLine("Eval(AggFn.Cnt) ...: " + await evalImplementationOnEFInMemory.Eval(AggFn.Cnt));
@@ -63,6 +48,29 @@ Console.WriteLine("[current price to MinMax Price position last 15m] => Eval(ag(
 Console.WriteLine("[current price to MinMax Price position last 01h] => Eval(ag(MMP,Cl0,To.M0,Fr.H1)) ...: " + await evalImplementationOnEFInMemory.Eval("ag(MMP,Cl0,To.M0,Fr.H1)"));
 Console.WriteLine("[current price to MinMax Price position last 24h] => Eval(ag(MMP,Cl0,To.M0,Fr.D1)) ...: " + await evalImplementationOnEFInMemory.Eval("ag(MMP,Cl0,To.M0,Fr.D1)"));
 
-
-
 Console.WriteLine();
+
+async Task PopulateDb(int numberOfSeconds)
+{
+    var services = new ServiceCollection();
+    services.AddDbContext<SampleDbContext>(opt => opt.UseInMemoryDatabase(databaseName: "InMemoryDb"));
+    var serviceProvider = services.BuildServiceProvider();
+    sampleDbContext = serviceProvider.GetService<SampleDbContext>();
+    if (sampleDbContext == null) return;
+    var price = 100.0m;
+    var rnd = new Random();
+    for (int i = 1; i <= numberOfSeconds; i++)
+    {
+        await sampleDbContext.Tickers.AddAsync(
+            new Ticker()
+            {
+                id = i,
+                ts = DateTime.UtcNow.AddSeconds(-(i - 1)),
+                price = price,
+                qty = 0.1m + (decimal)(rnd.NextDouble()),
+                side = rnd.NextDouble() < 0.5 ? "b" : "s"
+            });
+        price += (rnd.NextDouble() < 0.5 ? 1 : -1) * (decimal)(rnd.NextDouble());
+    }
+    await sampleDbContext.SaveChangesAsync();
+}
