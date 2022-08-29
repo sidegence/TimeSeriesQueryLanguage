@@ -26,7 +26,7 @@ namespace TimeSeriesQueryLanguage.Samples.ClientEvalImplementations
             return tsqlp == null ? 0.0m : await tsqlp.Eval(this);
         }
 
-        public async Task<decimal> Eval(AggFn aggFn, AggCl aggCl = AggCl.Cl0, AggTs aggTsSlideTo = AggTs.M0, AggTs aggTsFrame = AggTs.D7, int i = 0)
+        public async Task<decimal> Eval(AggFn aggFn, AggCl aggCl = AggCl.Cl0, AggTs aggTsSlideTo = AggTs.M0, AggTs aggTsFrame = AggTs.D7, AggFn aggFn2 = AggFn.Cnt, int i = 0)
         {
             var tsSlideTo = (await Db.Tickers.FirstAsync()).ts - AggTsToTimeSpanMapping.Map(aggTsSlideTo);
             var tsFrameMin = tsSlideTo - AggTsToTimeSpanMapping.Map(aggTsFrame);
@@ -53,6 +53,8 @@ namespace TimeSeriesQueryLanguage.Samples.ClientEvalImplementations
                         var lst = await Task.FromResult(AggClToTimeSeriesColumnMapping.Map(await tickers.LastAsync(), aggCl));
                         return min == max ? 50.0m : (lst - min) * (100 - 0) / (max - min);
                     }
+                case AggFn.FId: return await Task.FromResult(i);
+                case AggFn.Tid: return await Task.FromResult(i);
             }
 
             return 0.0m;

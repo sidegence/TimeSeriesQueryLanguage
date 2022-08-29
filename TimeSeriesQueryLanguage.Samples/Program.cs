@@ -47,6 +47,8 @@ Console.WriteLine("[Current Price to MinMax Price position last 05m] => Eval(ag(
 Console.WriteLine("[Current Price to MinMax Price position last 15m] => Eval(ag(MMP,Cl0,To.M0,Fr.M15)) ...: " + await evalImplementationOnEFInMemory.Eval("ag(MMP,Cl0,To.M0,Fr.M15)"));
 Console.WriteLine("[Current Price to MinMax Price position last 01h] => Eval(ag(MMP,Cl0,To.M0,Fr.H1)) ...: " + await evalImplementationOnEFInMemory.Eval("ag(MMP,Cl0,To.M0,Fr.H1)"));
 Console.WriteLine("[Current Price to MinMax Price position last 24h] => Eval(ag(MMP,Cl0,To.M0,Fr.D1)) ...: " + await evalImplementationOnEFInMemory.Eval("ag(MMP,Cl0,To.M0,Fr.D1)"));
+Console.WriteLine("[fid(1) ...: " + await evalImplementationOnEFInMemory.Eval("fid(1)"));
+Console.WriteLine("[tid(2) ...: " + await evalImplementationOnEFInMemory.Eval("tid(Lst,2,To.M0,Fr.M5)"));
 
 Console.WriteLine();
 

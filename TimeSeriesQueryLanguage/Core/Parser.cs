@@ -32,6 +32,7 @@ namespace TimeSeriesQueryLanguage.Core
             switch (_tokenizer?.Token)
             {
                 case Token.Agg:
+                case Token.Tid:
                 case Token.FId:
                 case Token.Number:
                     return ParseLeafNode();
@@ -82,6 +83,32 @@ namespace TimeSeriesQueryLanguage.Core
                     {
                         throw new Exception("ParseLeafNode Token.Agg no open parans");
                     }
+                case Token.Tid:
+                    _tokenizer.NextToken();
+                    if (_tokenizer.Token == Token.OpenParens)
+                    {
+                        _tokenizer.NextToken();
+                        AggFn aggFn = AggFn.Avg; decimal tid = 0; AggTs aggTsSlideTo = AggTs.M0; AggTs aggTsFrame = AggTs.M1;
+                        while (_tokenizer.Token != Token.CloseParens)
+                        {
+                            switch (_tokenizer.Token)
+                            {
+                                case Token.Comma: break;
+                                case Token.AggFn: aggFn = _tokenizer.AggFn; break;
+                                case Token.Number: tid = _tokenizer.Number; break;
+                                case Token.AggTsSlideTo: aggTsSlideTo = _tokenizer.AggTsSlideTo; break;
+                                case Token.AggTsFrame: aggTsFrame = _tokenizer.AggTsFrame; break;
+                                default:
+                                    throw new Exception($"ParseLeafNode not valid arg: {_tokenizer.Token}");
+                            }
+                            _tokenizer.NextToken();
+                        }
+                        return new TidNode(aggFn, tid, aggTsSlideTo, aggTsFrame);
+                    }
+                    else
+                    {
+                        throw new Exception("ParseLeafNode Token.Agg no open parans");
+                    }
                 case Token.FId:
                     _tokenizer.NextToken();
                     if (_tokenizer.Token == Token.OpenParens)
@@ -122,6 +149,7 @@ namespace TimeSeriesQueryLanguage.Core
                     switch (_tokenizer.Token)
                     {
                         case Token.Agg:
+                        case Token.Tid:
                         case Token.FId:
                         case Token.Number:
                             args.Add(ParseLeafNode());

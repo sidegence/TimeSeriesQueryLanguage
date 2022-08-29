@@ -18,7 +18,7 @@ namespace TimeSeriesQueryLanguage.Samples.ClientEvalImplementations
             Tickers = tickers.AsQueryable();
         }
 
-        public async Task<decimal> Eval(AggFn aggFn, AggCl aggCl = AggCl.Cl0, AggTs aggTsSlideTo = AggTs.M0, AggTs aggTsFrame = AggTs.D7, int i = 0)
+        public async Task<decimal> Eval(AggFn aggFn, AggCl aggCl = AggCl.Cl0, AggTs aggTsSlideTo = AggTs.M0, AggTs aggTsFrame = AggTs.D7, AggFn aggFn2 = AggFn.Cnt, int i = 0)
         {
             var tsSlideTo = Tickers.Last().ts - AggTsToTimeSpanMapping.Map(aggTsSlideTo);
             var tsFrameMin = tsSlideTo - AggTsToTimeSpanMapping.Map(aggTsFrame);

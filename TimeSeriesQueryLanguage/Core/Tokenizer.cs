@@ -107,6 +107,10 @@ namespace TimeSeriesQueryLanguage.Core
                 {
                     Token = Token.Agg;
                 }
+                else if (sbs == "tid")
+                {
+                    Token = Token.Tid;
+                }
                 else if (sbs == "fid")
                 {
                     Token = Token.FId;

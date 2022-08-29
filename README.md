@@ -58,7 +58,7 @@ Algebraic Operators: +, *, /, sc
 Logical Operators: &, |, <, >, in
 
 Task<decimal> Eval(AggFn aggFn, AggCl aggCl = AggCl.Cl0, AggTs aggTsSlideTo = AggTs.M0, AggTs aggTsFrame = AggTs.M0, int i = 0)
-AggFn : Cnt, TxS, TxM, TxH, Fst, Snd, Pen, Lst, Min, Max, Avg, Sum, Dlt, MMP, FId, StD
+AggFn : Cnt, TxS, TxM, TxH, Fst, Snd, Pen, Lst, Min, Max, Avg, Sum, Dlt, MMP, FId, StD, Tid
 Used for aggregation data on your data implementation class
 
 AggCl : Cl0, Cl1, Cl2, Cl3, Cl4, Cl5, Cl6, Cl7, Cl8, Cl9,
