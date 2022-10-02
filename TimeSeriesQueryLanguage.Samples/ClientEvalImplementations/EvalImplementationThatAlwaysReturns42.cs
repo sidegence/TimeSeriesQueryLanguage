@@ -11,11 +11,11 @@ namespace TimeSeriesQueryLanguage.Samples.ClientEvalImplementations
     public class EvalImplementationThatAlwaysReturns42 : ITimeSeriesQueryLanguageContext
     {
         public async Task<decimal> Eval<AggegrateFunctions, AggegrateColumns>(
-            AggegrateFunctions? aggFn,
+            OperationEnum operation = OperationEnum.Agg,
+            AggegrateFunctions? aggFn = default,
             AggegrateColumns? aggCl = default, 
-            AggTs aggTsSlideTo = AggTs.M0, 
-            AggTs aggTsFrame = AggTs.M0,
-            AggegrateFunctions? aggFn2 = default,
+            AggTimeIntervalEnum aggTsSlideTo = AggTimeIntervalEnum.M0, 
+            AggTimeIntervalEnum aggTsFrame = AggTimeIntervalEnum.M0,
             int i = 0
         ) where AggegrateFunctions : Enum where AggegrateColumns : Enum
         {

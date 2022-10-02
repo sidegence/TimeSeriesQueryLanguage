@@ -13,15 +13,15 @@ namespace TimeSeriesQueryLanguage.Functions
     {
         readonly TAggFn? AggFn;
         readonly decimal Tid;
-        readonly AggTs AggTsSlideTo;
-        readonly AggTs AggTsFrame;
-        public TidNode(TAggFn? aggFn, decimal tid, AggTs aggTsSlideTo, AggTs aggTsFrame)
+        readonly AggTimeIntervalEnum AggTsSlideTo;
+        readonly AggTimeIntervalEnum AggTsFrame;
+        public TidNode(TAggFn? aggFn, decimal tid, AggTimeIntervalEnum aggTsSlideTo, AggTimeIntervalEnum aggTsFrame)
         {
             AggFn = aggFn; Tid = tid; AggTsSlideTo = aggTsSlideTo; AggTsFrame = aggTsFrame;
         }
         public override Task<decimal> Eval(ITimeSeriesQueryLanguageContext ctx)
         {
-            return ctx.Eval<TAggFn, TAggCl>(default(TAggFn)/*.Tid*/, default(TAggCl), AggTsSlideTo, AggTsFrame, AggFn, (int) Tid);
+            return ctx.Eval<TAggFn, TAggCl>(OperationEnum.Tid, AggFn, default(TAggCl), AggTsSlideTo, AggTsFrame, (int) Tid);
         }
     }
 }

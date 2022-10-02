@@ -24,12 +24,12 @@ namespace TimeSeriesQueryLanguage.Core
             NextToken();
         }
 
-        public Token Token;
+        public TokenEnum Token;
         public decimal Number = 0;
         public TAggFn? AggFn = default;
         public TAggCl? AggCl = default;
-        public AggTs AggTsSlideTo;
-        public AggTs AggTsFrame;
+        public AggTimeIntervalEnum AggTsSlideTo;
+        public AggTimeIntervalEnum AggTsFrame;
 
         public void NextChar()
         {
@@ -46,21 +46,21 @@ namespace TimeSeriesQueryLanguage.Core
 
             if (_CurrentChar == '\0')
             {
-                Token = Token.EOF;
+                Token = TokenEnum.EOF;
             }
             else if (_CurrentChar == '(')
             {
-                Token = Token.OpenParens;
+                Token = TokenEnum.OpenParens;
                 NextChar();
             }
             else if (_CurrentChar == ')')
             {
-                Token = Token.CloseParens;
+                Token = TokenEnum.CloseParens;
                 NextChar();
             }
             else if (_CurrentChar == ',')
             {
-                Token = Token.Comma;
+                Token = TokenEnum.Comma;
                 NextChar();
             }
             else if (char.IsDigit(_CurrentChar) || _MathQualifiers.Contains(_CurrentChar))
@@ -71,7 +71,7 @@ namespace TimeSeriesQueryLanguage.Core
                     sb.Append(_CurrentChar);
                     NextChar();
                 }
-                Token = Token.Number; Number = decimal.Parse(sb.ToString(), CultureInfo.InvariantCulture);
+                Token = TokenEnum.Number; Number = decimal.Parse(sb.ToString(), CultureInfo.InvariantCulture);
             }
             else if (char.IsLetter(_CurrentChar) || _Operations.Contains(_CurrentChar))
             {
@@ -85,67 +85,67 @@ namespace TimeSeriesQueryLanguage.Core
                 var dot = sbs.IndexOf(".");
                 if (sbs == "*")
                 {
-                    Token = Token.Mult;
+                    Token = TokenEnum.Mult;
                 }
                 else if (sbs == "/")
                 {
-                    Token = Token.Div;
+                    Token = TokenEnum.Div;
                 }
                 else if (sbs == "+")
                 {
-                    Token = Token.Add;
+                    Token = TokenEnum.Add;
                 }
                 else if (sbs == "&")
                 {
-                    Token = Token.And;
+                    Token = TokenEnum.And;
                 }
                 else if (sbs == "|")
                 {
-                    Token = Token.Or;
+                    Token = TokenEnum.Or;
                 }
                 else if (sbs == "ag")
                 {
-                    Token = Token.Agg;
+                    Token = TokenEnum.Agg;
                 }
                 else if (sbs == "tid")
                 {
-                    Token = Token.Tid;
+                    Token = TokenEnum.Tid;
                 }
                 else if (sbs == "fid")
                 {
-                    Token = Token.FId;
+                    Token = TokenEnum.FId;
                 }
                 else if (sbs == ">")
                 {
-                    Token = Token.V1mV2;
+                    Token = TokenEnum.V1mV2;
                 }
                 else if (sbs == "<")
                 {
-                    Token = Token.V1lV2;
+                    Token = TokenEnum.V1lV2;
                 }
                 else if (sbs == "sc")
                 {
-                    Token = Token.Scale;
+                    Token = TokenEnum.Scale;
                 }
                 else if (sbs == "in")
                 {
-                    Token = Token.V1inV2V3;
+                    Token = TokenEnum.V1inV2V3;
                 }
                 else if (Enum.GetNames(typeof(TAggFn)).Contains(sbs))
                 {
-                    Token = Token.AggFn; AggFn = (TAggFn)Enum.Parse(typeof(TAggFn), sbs);
+                    Token = TokenEnum.AggFn; AggFn = (TAggFn)Enum.Parse(typeof(TAggFn), sbs);
                 }
                 else if (Enum.GetNames(typeof(TAggCl)).Contains(sbs))
                 {
-                    Token = Token.AggCl; AggCl = (TAggCl)Enum.Parse(typeof(TAggCl), sbs);
+                    Token = TokenEnum.AggCl; AggCl = (TAggCl)Enum.Parse(typeof(TAggCl), sbs);
                 }
                 else if (sbs.StartsWith("To.") && dot > 0)
                 {
-                    Token = Token.AggTsSlideTo; AggTsSlideTo = (AggTs)Enum.Parse(typeof(AggTs), sbs.Substring(dot + 1));
+                    Token = TokenEnum.AggTsSlideTo; AggTsSlideTo = (AggTimeIntervalEnum)Enum.Parse(typeof(AggTimeIntervalEnum), sbs.Substring(dot + 1));
                 }
                 else if (sbs.StartsWith("Fr.") && dot > 0)
                 {
-                    Token = Token.AggTsFrame; AggTsFrame = (AggTs)Enum.Parse(typeof(AggTs), sbs.Substring(dot + 1));
+                    Token = TokenEnum.AggTsFrame; AggTsFrame = (AggTimeIntervalEnum)Enum.Parse(typeof(AggTimeIntervalEnum), sbs.Substring(dot + 1));
                 }
                 else
                     throw new Exception($"{_Command} : Bad language syntax");

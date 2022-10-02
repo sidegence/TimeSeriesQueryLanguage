@@ -31,47 +31,47 @@ namespace TimeSeriesQueryLanguage.Core
         {
             switch (_tokenizer?.Token)
             {
-                case Token.Agg:
-                case Token.Tid:
-                case Token.FId:
-                case Token.Number:
+                case TokenEnum.Agg:
+                case TokenEnum.Tid:
+                case TokenEnum.FId:
+                case TokenEnum.Number:
                     return ParseLeafNode();
-                case Token.Mult:
-                case Token.Div:
-                case Token.Add:
-                case Token.And:
-                case Token.Or:
-                case Token.V1mV2:
-                case Token.V1lV2:
-                case Token.Scale:
-                case Token.V1inV2V3:
+                case TokenEnum.Mult:
+                case TokenEnum.Div:
+                case TokenEnum.Add:
+                case TokenEnum.And:
+                case TokenEnum.Or:
+                case TokenEnum.V1mV2:
+                case TokenEnum.V1lV2:
+                case TokenEnum.Scale:
+                case TokenEnum.V1inV2V3:
                     return ParseFunctionNode(_tokenizer.Token);
                 default:
                     break;
             }
             _tokenizer?.NextToken();
-            return _tokenizer?.Token == Token.EOF ? null : Parse();
+            return _tokenizer?.Token == TokenEnum.EOF ? null : Parse();
         }
 
         public AbstractNode ParseLeafNode()
         {
             switch (_tokenizer?.Token)
             {
-                case Token.Agg:
+                case TokenEnum.Agg:
                     _tokenizer.NextToken();
-                    if (_tokenizer.Token == Token.OpenParens)
+                    if (_tokenizer.Token == TokenEnum.OpenParens)
                     {
                         _tokenizer.NextToken();
-                        TAggFn? aggFn = default; TAggCl? aggCl = default; AggTs aggTsSlideTo = AggTs.M0; AggTs aggTsFrame = AggTs.M1;
-                        while (_tokenizer.Token != Token.CloseParens)
+                        TAggFn? aggFn = default; TAggCl? aggCl = default; AggTimeIntervalEnum aggTsSlideTo = AggTimeIntervalEnum.M0; AggTimeIntervalEnum aggTsFrame = AggTimeIntervalEnum.M1;
+                        while (_tokenizer.Token != TokenEnum.CloseParens)
                         {
                             switch (_tokenizer.Token)
                             {
-                                case Token.Comma: break;
-                                case Token.AggFn: aggFn = _tokenizer.AggFn; break;
-                                case Token.AggCl: aggCl = _tokenizer.AggCl; break;
-                                case Token.AggTsSlideTo: aggTsSlideTo = _tokenizer.AggTsSlideTo; break;
-                                case Token.AggTsFrame: aggTsFrame = _tokenizer.AggTsFrame; break;
+                                case TokenEnum.Comma: break;
+                                case TokenEnum.AggFn: aggFn = _tokenizer.AggFn; break;
+                                case TokenEnum.AggCl: aggCl = _tokenizer.AggCl; break;
+                                case TokenEnum.AggTsSlideTo: aggTsSlideTo = _tokenizer.AggTsSlideTo; break;
+                                case TokenEnum.AggTsFrame: aggTsFrame = _tokenizer.AggTsFrame; break;
                                 default:
                                     throw new Exception($"ParseLeafNode not valid arg: {_tokenizer.Token}");
                             }
@@ -83,21 +83,21 @@ namespace TimeSeriesQueryLanguage.Core
                     {
                         throw new Exception("ParseLeafNode Token.Agg no open parans");
                     }
-                case Token.Tid:
+                case TokenEnum.Tid:
                     _tokenizer.NextToken();
-                    if (_tokenizer.Token == Token.OpenParens)
+                    if (_tokenizer.Token == TokenEnum.OpenParens)
                     {
                         _tokenizer.NextToken();
-                        TAggFn? aggFn = default; decimal tid = 0; AggTs aggTsSlideTo = AggTs.M0; AggTs aggTsFrame = AggTs.M1;
-                        while (_tokenizer.Token != Token.CloseParens)
+                        TAggFn? aggFn = default; decimal tid = 0; AggTimeIntervalEnum aggTsSlideTo = AggTimeIntervalEnum.M0; AggTimeIntervalEnum aggTsFrame = AggTimeIntervalEnum.M1;
+                        while (_tokenizer.Token != TokenEnum.CloseParens)
                         {
                             switch (_tokenizer.Token)
                             {
-                                case Token.Comma: break;
-                                case Token.AggFn: aggFn = _tokenizer.AggFn; break;
-                                case Token.Number: tid = _tokenizer.Number; break;
-                                case Token.AggTsSlideTo: aggTsSlideTo = _tokenizer.AggTsSlideTo; break;
-                                case Token.AggTsFrame: aggTsFrame = _tokenizer.AggTsFrame; break;
+                                case TokenEnum.Comma: break;
+                                case TokenEnum.AggFn: aggFn = _tokenizer.AggFn; break;
+                                case TokenEnum.Number: tid = _tokenizer.Number; break;
+                                case TokenEnum.AggTsSlideTo: aggTsSlideTo = _tokenizer.AggTsSlideTo; break;
+                                case TokenEnum.AggTsFrame: aggTsFrame = _tokenizer.AggTsFrame; break;
                                 default:
                                     throw new Exception($"ParseLeafNode not valid arg: {_tokenizer.Token}");
                             }
@@ -109,17 +109,17 @@ namespace TimeSeriesQueryLanguage.Core
                     {
                         throw new Exception("ParseLeafNode Token.Agg no open parans");
                     }
-                case Token.FId:
+                case TokenEnum.FId:
                     _tokenizer.NextToken();
-                    if (_tokenizer.Token == Token.OpenParens)
+                    if (_tokenizer.Token == TokenEnum.OpenParens)
                     {
                         _tokenizer.NextToken();
                         decimal i = 0;
-                        while (_tokenizer.Token != Token.CloseParens)
+                        while (_tokenizer.Token != TokenEnum.CloseParens)
                         {
                             switch (_tokenizer.Token)
                             {
-                                case Token.Number: i = _tokenizer.Number; break;
+                                case TokenEnum.Number: i = _tokenizer.Number; break;
                                 default:
                                     throw new Exception($"ParseLeafNode not valid arg: {_tokenizer.Token}");
                             }
@@ -131,40 +131,40 @@ namespace TimeSeriesQueryLanguage.Core
                     {
                         throw new Exception("ParseLeafNode Token.Agg no open parans");
                     }
-                case Token.Number:
+                case TokenEnum.Number:
                     return new NumberNode(_tokenizer.Number);
             }
             throw new Exception($"ParseLeafNode _tokenizer.Token{_tokenizer?.Token}: Invalid syntax");
         }
 
-        public AbstractNode ParseFunctionNode(Token token)
+        public AbstractNode ParseFunctionNode(TokenEnum token)
         {
             _tokenizer?.NextToken();
-            if (_tokenizer?.Token == Token.OpenParens)
+            if (_tokenizer?.Token == TokenEnum.OpenParens)
             {
                 _tokenizer.NextToken();
                 List<AbstractNode> args = new List<AbstractNode>();
-                while (_tokenizer.Token != Token.CloseParens)
+                while (_tokenizer.Token != TokenEnum.CloseParens)
                 {
                     switch (_tokenizer.Token)
                     {
-                        case Token.Agg:
-                        case Token.Tid:
-                        case Token.FId:
-                        case Token.Number:
+                        case TokenEnum.Agg:
+                        case TokenEnum.Tid:
+                        case TokenEnum.FId:
+                        case TokenEnum.Number:
                             args.Add(ParseLeafNode());
                             break;
-                        case Token.Comma:
+                        case TokenEnum.Comma:
                             break;
-                        case Token.Mult:
-                        case Token.Div:
-                        case Token.Add:
-                        case Token.And:
-                        case Token.Or:
-                        case Token.V1mV2:
-                        case Token.V1lV2:
-                        case Token.Scale:
-                        case Token.V1inV2V3:
+                        case TokenEnum.Mult:
+                        case TokenEnum.Div:
+                        case TokenEnum.Add:
+                        case TokenEnum.And:
+                        case TokenEnum.Or:
+                        case TokenEnum.V1mV2:
+                        case TokenEnum.V1lV2:
+                        case TokenEnum.Scale:
+                        case TokenEnum.V1inV2V3:
                             args.Add(ParseFunctionNode(_tokenizer.Token));
                             break;
                         default:
@@ -174,15 +174,15 @@ namespace TimeSeriesQueryLanguage.Core
                 }
                 switch (token)
                 {
-                    case Token.Mult: return new MultiplicationNode(args);
-                    case Token.Div: return new DivisionNode(args);
-                    case Token.Add: return new AddNode(args);
-                    case Token.And: return new AndNode(args);
-                    case Token.Or: return new OrNode(args);
-                    case Token.V1mV2: return new V1mV2Node(args);
-                    case Token.V1lV2: return new V1lV2Node(args);
-                    case Token.Scale: return new ScaleNode(args);
-                    case Token.V1inV2V3: return new V1inV2V3Node(args);
+                    case TokenEnum.Mult: return new MultiplicationNode(args);
+                    case TokenEnum.Div: return new DivisionNode(args);
+                    case TokenEnum.Add: return new AddNode(args);
+                    case TokenEnum.And: return new AndNode(args);
+                    case TokenEnum.Or: return new OrNode(args);
+                    case TokenEnum.V1mV2: return new V1mV2Node(args);
+                    case TokenEnum.V1lV2: return new V1lV2Node(args);
+                    case TokenEnum.Scale: return new ScaleNode(args);
+                    case TokenEnum.V1inV2V3: return new V1inV2V3Node(args);
                 }
                 throw new Exception("ParseFunctionNode not a valid token");
             }

@@ -13,16 +13,16 @@ namespace TimeSeriesQueryLanguage.Tests
         {
             var clientEvalImplementation = new EvalImplementationThatAlwaysReturns42();
 
-            foreach (var aggFn in Enum.GetValues(typeof(AggegrateFunctions)))
+            foreach (var aggFn in Enum.GetValues(typeof(AggregateFunctionsEnum)))
             {
-                foreach (var aggCl in Enum.GetValues(typeof(AggCl)))
+                foreach (var aggCl in Enum.GetValues(typeof(AggregateColumnsEnum)))
                 {
-                    foreach (var aggTsSlideTo in Enum.GetValues(typeof(AggTs)))
+                    foreach (var aggTsSlideTo in Enum.GetValues(typeof(AggTimeIntervalEnum)))
                     {
-                        foreach (var aggTsFrame in Enum.GetValues(typeof(AggTs)))
+                        foreach (var aggTsFrame in Enum.GetValues(typeof(AggTimeIntervalEnum)))
                         {
                             string fn = $"ag({aggFn},{aggCl},To.{aggTsSlideTo},Fr.{aggTsFrame})";
-                            var result = new TimeSeriesQueryLanguageParser<AggegrateFunctions>().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
+                            var result = new TimeSeriesQueryLanguageParser<AggregateFunctionsEnum, AggregateColumnsEnum>().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
                             result.Should().Be(42);
                         }
                     }

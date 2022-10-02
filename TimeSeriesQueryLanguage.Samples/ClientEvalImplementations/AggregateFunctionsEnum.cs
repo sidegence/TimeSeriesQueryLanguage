@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace TimeSeriesQueryLanguage.Samples.ClientEvalImplementations
 {
-    public enum AggegrateColumns1 { price = 0, qty, side }
+    public enum AggregateFunctionsEnum { Nop = 0, Cnt, TxS, TxM, TxH, Fst, Snd, Pen, Lst, Min, Max, Avg, Sum, Dlt, MMP, StD }
 }

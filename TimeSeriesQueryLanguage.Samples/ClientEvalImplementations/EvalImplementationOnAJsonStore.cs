@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,56 +10,44 @@ using TimeSeriesQueryLanguage.Enums;
 using TimeSeriesQueryLanguage.Interfaces;
 using TimeSeriesQueryLanguage.Samples.Mappings;
 using TimeSeriesQueryLanguage.Samples.Persistence;
+using static Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions;
 
 namespace TimeSeriesQueryLanguage.Samples.ClientEvalImplementations
 {
     public class EvalImplementationOnAJsonStore : ITimeSeriesQueryLanguageContext
     {
-        enum AggegrateColumns { price = 0, qty, side }
-
         readonly IQueryable<Ticker> Tickers;
         public EvalImplementationOnAJsonStore(List<Ticker> tickers)
         {
             Tickers = tickers.AsQueryable();
         }
 
-        public async Task<decimal> Eval<AggegrateFunctions, T>(
-            AggegrateFunctions? aggFn,
-            T? aggCl = default,
-            AggTs aggTsSlideTo = AggTs.M0,
-            AggTs aggTsFrame = AggTs.M0,
-            AggegrateFunctions? aggFn2 = default,
+        public async Task<decimal> Eval<TAggFn, TAggCl>(
+            OperationEnum operationEnum = OperationEnum.Agg,
+            TAggFn? aggFn = default,
+            TAggCl? aggCl = default,
+            AggTimeIntervalEnum aggTsSlideTo = AggTimeIntervalEnum.M0,
+            AggTimeIntervalEnum aggTsFrame = AggTimeIntervalEnum.M0,
             int i = 0
-        ) where AggegrateFunctions : Enum where T : Enum
+        ) where TAggFn : Enum where TAggCl : Enum
         {
-            if (aggFn == null || aggCl == null)
-                return 0.0m;
+            if (aggFn == null || !Enum.IsDefined(typeof(TAggFn), aggFn) || aggCl == null || !Enum.IsDefined(typeof(TAggCl), aggCl))
+                throw new ArgumentNullException("Eval<TAggFn, TAggCl> type args cannot be null");
 
-            var tsSlideTo = Tickers.Last().ts - AggTsToTimeSpanMapping.Map(aggTsSlideTo);
-            var tsFrameMin = tsSlideTo - AggTsToTimeSpanMapping.Map(aggTsFrame);
-            var tickers = Tickers.Where(_ => _.ts <= tsSlideTo && _.ts >= tsFrameMin);
+            var tickers = Tickers;
 
-            var x = (T) Enum.Parse(typeof(T), aggCl.ToString());
+            var column = Helper.Convert<AggregateColumnsEnum>(aggCl.ToString());
+            var columnFunc = Helper.Map(column);
 
-            switch (aggFn.ToString())
+            switch (Helper.Convert<AggregateFunctionsEnum>(aggFn.ToString()))
             {
-                case "Cnt": return await Task.Run(() => tickers.Count());
-                //case "Fst": return await Task.Run(() => AggClToTimeSeriesColumnMapping.Map(tickers.First(), aggCl));
-                //case "Lst": return await Task.Run(() => AggClToTimeSeriesColumnMapping.Map(tickers.Last(), aggCl));
-                case "Avg": return await Task.Run(() => tickers.Average(_ => Map((AggegrateColumns)(int)x)));
+                case AggregateFunctionsEnum.Cnt: return tickers.Count();
+                case AggregateFunctionsEnum.Fst: return Helper.Map(tickers.FirstOrDefault(), column);
+                case AggregateFunctionsEnum.Lst: return Helper.Map(tickers.LastOrDefault(), column);
+                case AggregateFunctionsEnum.Avg: return tickers.Average(columnFunc);
             }
 
-            return 0.0m;
-        }
-        static Expression<Func<Ticker, decimal>> Map(AggegrateColumns aggegrateColumns)
-        {
-            switch (aggegrateColumns)
-            {
-                case AggegrateColumns.price: return (_) => _.price;
-                case AggegrateColumns.qty: return (_) => _.qty;
-                default:
-                    throw new Exception($"Map({aggegrateColumns}) not implemented.");
-            }
+            return await Task.FromResult(0.0m);
         }
     }
 }

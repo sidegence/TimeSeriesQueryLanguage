@@ -10,11 +10,11 @@ namespace TimeSeriesQueryLanguage.Interfaces
     public interface ITimeSeriesQueryLanguageContext
     {
         Task<decimal> Eval<TAggFn, TAggCl>(
+            OperationEnum operationEnum = OperationEnum.Agg,
             TAggFn? aggFn = default,
             TAggCl? aggCl = default, 
-            AggTs aggTsSlideTo = AggTs.M0, 
-            AggTs aggTsFrame = AggTs.M0,
-            TAggFn? aggFn2 = default,
+            AggTimeIntervalEnum aggTsSlideTo = AggTimeIntervalEnum.M0, 
+            AggTimeIntervalEnum aggTsFrame = AggTimeIntervalEnum.M0,
             int i = 0
         ) where TAggFn : Enum where TAggCl : Enum;
     }

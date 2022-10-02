@@ -17,7 +17,7 @@ namespace TimeSeriesQueryLanguage.Functions
         }
         public override Task<decimal> Eval(ITimeSeriesQueryLanguageContext ctx)
         {
-            return ctx.Eval<TAggFn, TAggCl>(default(TAggFn)/*.Fid*/, i: Id);
+            return ctx.Eval<TAggFn, TAggCl>(OperationEnum.Fid, i: Id);
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TimeSeriesQueryLanguage.Enums
 {
-    public enum Token
+    public enum TokenEnum
     {
         EOF,
         OpenParens,
