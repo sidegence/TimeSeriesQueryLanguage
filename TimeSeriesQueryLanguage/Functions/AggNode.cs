@@ -8,19 +8,19 @@ using TimeSeriesQueryLanguage.Interfaces;
 
 namespace TimeSeriesQueryLanguage.Functions
 {
-    public class AggNode : AbstractNode
+    public class AggNode<TAggFn, TAggCl> : AbstractNode where TAggFn : Enum where TAggCl : Enum
     {
-        readonly AggFn AggFn;
-        readonly AggCl AggCl;
+        readonly TAggFn? AggFn;
+        readonly TAggCl? AggCl;
         readonly AggTs AggTsSlideTo;
         readonly AggTs AggTsFrame;
-        public AggNode(AggFn aggFn, AggCl aggCl, AggTs aggTsSlideTo, AggTs aggTsFrame)
+        public AggNode(TAggFn? aggFn, TAggCl? aggCl, AggTs aggTsSlideTo, AggTs aggTsFrame)
         {
             AggFn = aggFn; AggCl = aggCl; AggTsSlideTo = aggTsSlideTo; AggTsFrame = aggTsFrame;
         }
         public override Task<decimal> Eval(ITimeSeriesQueryLanguageContext ctx)
         {
-            return ctx.Eval(AggFn, AggCl, AggTsSlideTo, AggTsFrame);
+            return ctx.Eval<TAggFn, TAggCl>(AggFn, AggCl, AggTsSlideTo, AggTsFrame);
         }
     }
 }

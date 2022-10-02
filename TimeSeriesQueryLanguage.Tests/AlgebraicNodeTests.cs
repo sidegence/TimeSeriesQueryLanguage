@@ -21,7 +21,7 @@ namespace TimeSeriesQueryLanguage.Tests
             var clientEvalImplementation = new EvalImplementationThatAlwaysReturns42();
             string fn = $"{p1}";
 
-            var result = new TimeSeriesQueryLanguageParser().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
+            var result = new TimeSeriesQueryLanguageParser<AggegrateFunctions>().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
 
             result.Should().Be(p1);
         }
@@ -39,7 +39,7 @@ namespace TimeSeriesQueryLanguage.Tests
             var clientEvalImplementation = new EvalImplementationThatAlwaysReturns42();
             string fn = $"*({p1},{p2})";
 
-            var result = new TimeSeriesQueryLanguageParser().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
+            var result = new TimeSeriesQueryLanguageParser<AggegrateFunctions>().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
 
             result.Should().Be(p1 * p2);
         }
@@ -57,7 +57,7 @@ namespace TimeSeriesQueryLanguage.Tests
             var clientEvalImplementation = new EvalImplementationThatAlwaysReturns42();
             string fn = $"/({p1},{p2})";
 
-            var result = new TimeSeriesQueryLanguageParser().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
+            var result = new TimeSeriesQueryLanguageParser<AggegrateFunctions>().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
 
             result.Should().Be(p2 == 0 ? 0 : p1 / p2);
         }
@@ -85,7 +85,7 @@ namespace TimeSeriesQueryLanguage.Tests
             var clientEvalImplementation = new EvalImplementationThatAlwaysReturns42();
             string fn = $"/({p1},+(*(*({p1},{p2}),*({p2},{p1})),{1000000}))";
 
-            var result = new TimeSeriesQueryLanguageParser().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
+            var result = new TimeSeriesQueryLanguageParser<AggegrateFunctions>().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
 
             result.Should().Be((p1 / (((p1 * p2) * (p2 * p1) + 1000000))));
         }

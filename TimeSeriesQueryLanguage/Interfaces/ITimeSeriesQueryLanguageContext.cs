@@ -9,6 +9,13 @@ namespace TimeSeriesQueryLanguage.Interfaces
 {
     public interface ITimeSeriesQueryLanguageContext
     {
-        Task<decimal> Eval(AggFn aggFn, AggCl aggCl = AggCl.Cl0, AggTs aggTsSlideTo = AggTs.M0, AggTs aggTsFrame = AggTs.M0, AggFn aggFn2 = AggFn.Cnt, int i = 0);
+        Task<decimal> Eval<TAggFn, TAggCl>(
+            TAggFn? aggFn = default,
+            TAggCl? aggCl = default, 
+            AggTs aggTsSlideTo = AggTs.M0, 
+            AggTs aggTsFrame = AggTs.M0,
+            TAggFn? aggFn2 = default,
+            int i = 0
+        ) where TAggFn : Enum where TAggCl : Enum;
     }
 }

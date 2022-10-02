@@ -8,7 +8,7 @@ using TimeSeriesQueryLanguage.Enums;
 
 namespace TimeSeriesQueryLanguage.Core
 {
-    public class Tokenizer
+    public class Tokenizer<TAggFn,TAggCl> where TAggFn : Enum where TAggCl : Enum
     {
         char[] _MathQualifiers = new char[] { '-', '.' };
         char[] _Operations = new char[] { '*', '/', '+', '<', '>', '.', '&', '|' };
@@ -26,8 +26,8 @@ namespace TimeSeriesQueryLanguage.Core
 
         public Token Token;
         public decimal Number = 0;
-        public AggFn AggFn;
-        public AggCl AggCl;
+        public TAggFn? AggFn = default;
+        public TAggCl? AggCl = default;
         public AggTs AggTsSlideTo;
         public AggTs AggTsFrame;
 
@@ -131,13 +131,13 @@ namespace TimeSeriesQueryLanguage.Core
                 {
                     Token = Token.V1inV2V3;
                 }
-                else if (Enum.GetNames(typeof(AggFn)).Contains(sbs))
+                else if (Enum.GetNames(typeof(TAggFn)).Contains(sbs))
                 {
-                    Token = Token.AggFn; AggFn = (AggFn)Enum.Parse(typeof(AggFn), sbs);
+                    Token = Token.AggFn; AggFn = (TAggFn)Enum.Parse(typeof(TAggFn), sbs);
                 }
-                else if (Enum.GetNames(typeof(AggCl)).Contains(sbs))
+                else if (Enum.GetNames(typeof(TAggCl)).Contains(sbs))
                 {
-                    Token = Token.AggCl; AggCl = (AggCl)Enum.Parse(typeof(AggCl), sbs);
+                    Token = Token.AggCl; AggCl = (TAggCl)Enum.Parse(typeof(TAggCl), sbs);
                 }
                 else if (sbs.StartsWith("To.") && dot > 0)
                 {

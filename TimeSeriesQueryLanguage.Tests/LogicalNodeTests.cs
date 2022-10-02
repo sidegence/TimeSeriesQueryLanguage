@@ -19,7 +19,7 @@ namespace TimeSeriesQueryLanguage.Tests
             var clientEvalImplementation = new EvalImplementationThatAlwaysReturns42();
             string fn = $"&({p1},{p2})";
 
-            var result = new TimeSeriesQueryLanguageParser().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
+            var result = new TimeSeriesQueryLanguageParser<AggegrateFunctions>().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
 
             result.Should().Be(Convert.ToDecimal(Convert.ToBoolean(p1) && Convert.ToBoolean(p2)));
         }
@@ -35,7 +35,7 @@ namespace TimeSeriesQueryLanguage.Tests
             var clientEvalImplementation = new EvalImplementationThatAlwaysReturns42();
             string fn = $"|({p1},{p2})";
 
-            var result = new TimeSeriesQueryLanguageParser().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
+            var result = new TimeSeriesQueryLanguageParser<AggegrateFunctions>().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
 
             result.Should().Be(Convert.ToDecimal(Convert.ToBoolean(p1) || Convert.ToBoolean(p2)));
         }
@@ -53,7 +53,7 @@ namespace TimeSeriesQueryLanguage.Tests
             var clientEvalImplementation = new EvalImplementationThatAlwaysReturns42();
             string fn = $">({p1},{p2})";
 
-            var result = new TimeSeriesQueryLanguageParser().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
+            var result = new TimeSeriesQueryLanguageParser<AggegrateFunctions>().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
 
             result.Should().Be(p1 > p2 ? 1 : 0);
         }
@@ -71,7 +71,7 @@ namespace TimeSeriesQueryLanguage.Tests
             var clientEvalImplementation = new EvalImplementationThatAlwaysReturns42();
             string fn = $"<({p1},{p2})";
 
-            var result = new TimeSeriesQueryLanguageParser().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
+            var result = new TimeSeriesQueryLanguageParser<AggegrateFunctions>().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
 
             result.Should().Be(p1 < p2 ? 1 : 0);
         }
@@ -96,7 +96,7 @@ namespace TimeSeriesQueryLanguage.Tests
             var clientEvalImplementation = new EvalImplementationThatAlwaysReturns42();
             string fn = $"in({p1}, {p2}, {p3})";
 
-            var result = new TimeSeriesQueryLanguageParser().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
+            var result = new TimeSeriesQueryLanguageParser<AggegrateFunctions>().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
 
             result.Should().Be(expected);
         }
@@ -121,7 +121,7 @@ namespace TimeSeriesQueryLanguage.Tests
             var clientEvalImplementation = new EvalImplementationThatAlwaysReturns42();
             string fn = $"|(&(<({p2}, {p1}),<({p1}, {p3})),&(<({p3}, {p1}),<({p1}, {p2})))";
 
-            var result = new TimeSeriesQueryLanguageParser().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
+            var result = new TimeSeriesQueryLanguageParser<AggegrateFunctions>().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
 
             result.Should().Be(expected);
         }

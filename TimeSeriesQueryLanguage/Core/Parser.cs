@@ -8,9 +8,9 @@ using TimeSeriesQueryLanguage.Functions;
 
 namespace TimeSeriesQueryLanguage.Core
 {
-    public class TimeSeriesQueryLanguageParser
+    public class TimeSeriesQueryLanguageParser<TAggFn, TAggCl> where TAggFn : Enum where TAggCl : Enum
     {
-        Tokenizer? _tokenizer;
+        Tokenizer<TAggFn, TAggCl>? _tokenizer;
 
         public TimeSeriesQueryLanguageParser()
         {
@@ -21,9 +21,9 @@ namespace TimeSeriesQueryLanguage.Core
             Set(text);
         }
 
-        public TimeSeriesQueryLanguageParser Set(string text)
+        public TimeSeriesQueryLanguageParser<TAggFn, TAggCl> Set(string text)
         {
-            _tokenizer = new Tokenizer(text);
+            _tokenizer = new Tokenizer<TAggFn, TAggCl>(text);
             return this;
         }
 
@@ -62,7 +62,7 @@ namespace TimeSeriesQueryLanguage.Core
                     if (_tokenizer.Token == Token.OpenParens)
                     {
                         _tokenizer.NextToken();
-                        AggFn aggFn = AggFn.Avg; AggCl aggCl = AggCl.Cl0; AggTs aggTsSlideTo = AggTs.M0; AggTs aggTsFrame = AggTs.M1;
+                        TAggFn? aggFn = default; TAggCl? aggCl = default; AggTs aggTsSlideTo = AggTs.M0; AggTs aggTsFrame = AggTs.M1;
                         while (_tokenizer.Token != Token.CloseParens)
                         {
                             switch (_tokenizer.Token)
@@ -77,7 +77,7 @@ namespace TimeSeriesQueryLanguage.Core
                             }
                             _tokenizer.NextToken();
                         }
-                        return new AggNode(aggFn, aggCl, aggTsSlideTo, aggTsFrame);
+                        return new AggNode<TAggFn, TAggCl>(aggFn, aggCl, aggTsSlideTo, aggTsFrame);
                     }
                     else
                     {
@@ -88,7 +88,7 @@ namespace TimeSeriesQueryLanguage.Core
                     if (_tokenizer.Token == Token.OpenParens)
                     {
                         _tokenizer.NextToken();
-                        AggFn aggFn = AggFn.Avg; decimal tid = 0; AggTs aggTsSlideTo = AggTs.M0; AggTs aggTsFrame = AggTs.M1;
+                        TAggFn? aggFn = default; decimal tid = 0; AggTs aggTsSlideTo = AggTs.M0; AggTs aggTsFrame = AggTs.M1;
                         while (_tokenizer.Token != Token.CloseParens)
                         {
                             switch (_tokenizer.Token)
@@ -103,7 +103,7 @@ namespace TimeSeriesQueryLanguage.Core
                             }
                             _tokenizer.NextToken();
                         }
-                        return new TidNode(aggFn, tid, aggTsSlideTo, aggTsFrame);
+                        return new TidNode<TAggFn, TAggCl>(aggFn, tid, aggTsSlideTo, aggTsFrame);
                     }
                     else
                     {
@@ -125,7 +125,7 @@ namespace TimeSeriesQueryLanguage.Core
                             }
                             _tokenizer.NextToken();
                         }
-                        return new FIdNode(i);
+                        return new FIdNode<TAggFn, TAggCl>(i);
                     }
                     else
                     {

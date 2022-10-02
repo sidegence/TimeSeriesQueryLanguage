@@ -20,7 +20,7 @@ namespace TimeSeriesQueryLanguage.Tests
         public void WhenUsingUncorrectSyntax_ShouldThrow(string fn)
         {
             FluentActions
-                .Invoking(() => new TimeSeriesQueryLanguageParser().Set(fn)?.Parse()?.Eval(new EvalImplementationThatAlwaysReturns42()).Result)
+                .Invoking(() => new TimeSeriesQueryLanguageParser<AggegrateFunctions>().Set(fn)?.Parse()?.Eval(new EvalImplementationThatAlwaysReturns42()).Result)
                 .Should().Throw<Exception>();
         }
     }

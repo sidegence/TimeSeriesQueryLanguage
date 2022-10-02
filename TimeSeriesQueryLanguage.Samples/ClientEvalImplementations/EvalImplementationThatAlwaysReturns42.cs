@@ -10,7 +10,14 @@ namespace TimeSeriesQueryLanguage.Samples.ClientEvalImplementations
 {
     public class EvalImplementationThatAlwaysReturns42 : ITimeSeriesQueryLanguageContext
     {
-        public async Task<decimal> Eval(AggFn aggFn, AggCl aggCl = AggCl.Cl0, AggTs aggTsSlideTo = AggTs.M0, AggTs aggTsFrame = AggTs.M0, AggFn aggFn2 = AggFn.Cnt, int i = 0)
+        public async Task<decimal> Eval<AggegrateFunctions, AggegrateColumns>(
+            AggegrateFunctions? aggFn,
+            AggegrateColumns? aggCl = default, 
+            AggTs aggTsSlideTo = AggTs.M0, 
+            AggTs aggTsFrame = AggTs.M0,
+            AggegrateFunctions? aggFn2 = default,
+            int i = 0
+        ) where AggegrateFunctions : Enum where AggegrateColumns : Enum
         {
             return await Task.FromResult(42);
         }

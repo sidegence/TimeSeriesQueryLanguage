@@ -8,7 +8,7 @@ using TimeSeriesQueryLanguage.Interfaces;
 
 namespace TimeSeriesQueryLanguage.Functions
 {
-    public class FIdNode : AbstractNode
+    public class FIdNode<TAggFn, TAggCl> : AbstractNode where TAggFn : Enum where TAggCl : Enum
     {
         readonly int Id;
         public FIdNode(decimal id)
@@ -17,7 +17,7 @@ namespace TimeSeriesQueryLanguage.Functions
         }
         public override Task<decimal> Eval(ITimeSeriesQueryLanguageContext ctx)
         {
-            return ctx.Eval(AggFn.FId, i: Id);
+            return ctx.Eval<TAggFn, TAggCl>(default(TAggFn)/*.Fid*/, i: Id);
         }
     }
 }

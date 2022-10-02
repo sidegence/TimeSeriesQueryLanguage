@@ -9,19 +9,19 @@ using TimeSeriesQueryLanguage.Interfaces;
 
 namespace TimeSeriesQueryLanguage.Functions
 {
-    public class TidNode : AbstractNode
+    public class TidNode<TAggFn, TAggCl> : AbstractNode where TAggFn : Enum where TAggCl : Enum
     {
-        readonly AggFn AggFn;
+        readonly TAggFn? AggFn;
         readonly decimal Tid;
         readonly AggTs AggTsSlideTo;
         readonly AggTs AggTsFrame;
-        public TidNode(AggFn aggFn, decimal tid, AggTs aggTsSlideTo, AggTs aggTsFrame)
+        public TidNode(TAggFn? aggFn, decimal tid, AggTs aggTsSlideTo, AggTs aggTsFrame)
         {
             AggFn = aggFn; Tid = tid; AggTsSlideTo = aggTsSlideTo; AggTsFrame = aggTsFrame;
         }
         public override Task<decimal> Eval(ITimeSeriesQueryLanguageContext ctx)
         {
-            return ctx.Eval(AggFn.Tid, AggCl.Cl0, AggTsSlideTo, AggTsFrame, AggFn, (int) Tid);
+            return ctx.Eval<TAggFn, TAggCl>(default(TAggFn)/*.Tid*/, default(TAggCl), AggTsSlideTo, AggTsFrame, AggFn, (int) Tid);
         }
     }
 }

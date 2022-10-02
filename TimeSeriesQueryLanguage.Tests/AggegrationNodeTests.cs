@@ -13,7 +13,7 @@ namespace TimeSeriesQueryLanguage.Tests
         {
             var clientEvalImplementation = new EvalImplementationThatAlwaysReturns42();
 
-            foreach (var aggFn in Enum.GetValues(typeof(AggFn)))
+            foreach (var aggFn in Enum.GetValues(typeof(AggegrateFunctions)))
             {
                 foreach (var aggCl in Enum.GetValues(typeof(AggCl)))
                 {
@@ -22,7 +22,7 @@ namespace TimeSeriesQueryLanguage.Tests
                         foreach (var aggTsFrame in Enum.GetValues(typeof(AggTs)))
                         {
                             string fn = $"ag({aggFn},{aggCl},To.{aggTsSlideTo},Fr.{aggTsFrame})";
-                            var result = new TimeSeriesQueryLanguageParser().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
+                            var result = new TimeSeriesQueryLanguageParser<AggegrateFunctions>().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
                             result.Should().Be(42);
                         }
                     }
