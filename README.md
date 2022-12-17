@@ -8,15 +8,17 @@ The syntax is simple yet powerfull because it can compare series of data.
     Example: "ag(Avg, Price, Fr.H1, To.Zero)"  means ''Get average price for the last hour''
     Example: ">(ag(Avg, Price, Fr.H1, To.Zero),ag(Avg, Price, Fr.D1, To.Zero))" means ''Is price average for the last hour bigger than the price average for he last 24h''
 
-For flexibility Avg is a function defined by your own implementation.
-On some application, its common to have Avg, Count, StandadrDeviation, Min, Max, etc 
+For flexibility "Avg" is a function defined by your own implementation.
+On some applications, its common to have Avg, Count, StandardDeviation, Min, Max, etc 
 
-And Price is again defined by your own dataset implementation. Tipically columns in tables.
+And "Price" is again, defined by your own dataset implementation. Tipically columns in tables where you want to aggregate values.
 On financial applications, its common to have Price, QuantityBought, QuantitySold, etc
 
 The Eval method will always return a decimal.
 
 ## Quick Start
+
+Sample minimal pseudo code implementation:
 
 ```
 public class YOUREvalImplementation : ITimeSeriesQueryLanguageContext
@@ -41,14 +43,11 @@ public class YOUREvalImplementation : ITimeSeriesQueryLanguageContext
         int i = 0
     ) where TAggFn : Enum where TAggCl : Enum
     {
-        if (aggFn == null || !Enum.IsDefined(typeof(TAggFn), aggFn) || aggCl == null || !Enum.IsDefined(typeof(TAggCl), aggCl))
-            throw new ArgumentNullException("Eval<TAggFn, TAggCl> type arguments cannot be null or undefined");
-
-        var to = (await Db.Tickers.FirstAsync()).ts - AggTsToTimeSpanMapping.Map(aggTsTo);
-        var fr = to - AggTsToTimeSpanMapping.Map(aggTsFr);
+        var to = DateTime.UtcNow - AggTimeIntervalEnumToTimeSpan.Map(aggTsTo);
+        var fr = to - AggTimeIntervalEnumToTimeSpan.Map(aggTsFr);
         var tickers = Db.Tickers.Where(_ => _.ts >= fr && _.ts <= to);
 
-        switch (Helper.Convert<AggregateFunctionsEnum>(aggFn.ToString()))
+        switch (aggFn)
         {
             case AggFn.Cnt: return await tickers.CountAsync();
         }

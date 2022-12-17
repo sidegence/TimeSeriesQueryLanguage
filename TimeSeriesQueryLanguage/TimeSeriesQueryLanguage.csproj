@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/sidegence/TimeSeriesQueryLanguage</RepositoryUrl>
-    <AssemblyVersion>1.0.5</AssemblyVersion>
+    <AssemblyVersion>2.0</AssemblyVersion>
     <Version>$(AssemblyVersion)</Version>
     <Authors>Sergio M</Authors>
     <Company>www.sidegence.com</Company>
