@@ -32,7 +32,6 @@ namespace TimeSeriesQueryLanguage.Core
             switch (_tokenizer?.Token)
             {
                 case TokenEnum.Agg:
-                case TokenEnum.Tid:
                 case TokenEnum.FId:
                 case TokenEnum.Number:
                     return ParseLeafNode();
@@ -62,7 +61,7 @@ namespace TimeSeriesQueryLanguage.Core
                     if (_tokenizer.Token == TokenEnum.OpenParens)
                     {
                         _tokenizer.NextToken();
-                        TAggFn? aggFn = default; TAggCl? aggCl = default; AggTimeIntervalEnum aggTsSlideTo = AggTimeIntervalEnum.M0; AggTimeIntervalEnum aggTsFrame = AggTimeIntervalEnum.M1;
+                        TAggFn? aggFn = default; TAggCl? aggCl = default; AggTimeIntervalEnum aggTsFr = AggTimeIntervalEnum.Zero; AggTimeIntervalEnum aggTsTo = AggTimeIntervalEnum.M1;
                         while (_tokenizer.Token != TokenEnum.CloseParens)
                         {
                             switch (_tokenizer.Token)
@@ -70,40 +69,14 @@ namespace TimeSeriesQueryLanguage.Core
                                 case TokenEnum.Comma: break;
                                 case TokenEnum.AggFn: aggFn = _tokenizer.AggFn; break;
                                 case TokenEnum.AggCl: aggCl = _tokenizer.AggCl; break;
-                                case TokenEnum.AggTsSlideTo: aggTsSlideTo = _tokenizer.AggTsSlideTo; break;
-                                case TokenEnum.AggTsFrame: aggTsFrame = _tokenizer.AggTsFrame; break;
+                                case TokenEnum.AggTsFr: aggTsFr = _tokenizer.AggTsFr; break;
+                                case TokenEnum.AggTsTo: aggTsTo = _tokenizer.AggTsTo; break;
                                 default:
                                     throw new Exception($"ParseLeafNode not valid arg: {_tokenizer.Token}");
                             }
                             _tokenizer.NextToken();
                         }
-                        return new AggNode<TAggFn, TAggCl>(aggFn, aggCl, aggTsSlideTo, aggTsFrame);
-                    }
-                    else
-                    {
-                        throw new Exception("ParseLeafNode Token.Agg no open parans");
-                    }
-                case TokenEnum.Tid:
-                    _tokenizer.NextToken();
-                    if (_tokenizer.Token == TokenEnum.OpenParens)
-                    {
-                        _tokenizer.NextToken();
-                        TAggFn? aggFn = default; decimal tid = 0; AggTimeIntervalEnum aggTsSlideTo = AggTimeIntervalEnum.M0; AggTimeIntervalEnum aggTsFrame = AggTimeIntervalEnum.M1;
-                        while (_tokenizer.Token != TokenEnum.CloseParens)
-                        {
-                            switch (_tokenizer.Token)
-                            {
-                                case TokenEnum.Comma: break;
-                                case TokenEnum.AggFn: aggFn = _tokenizer.AggFn; break;
-                                case TokenEnum.Number: tid = _tokenizer.Number; break;
-                                case TokenEnum.AggTsSlideTo: aggTsSlideTo = _tokenizer.AggTsSlideTo; break;
-                                case TokenEnum.AggTsFrame: aggTsFrame = _tokenizer.AggTsFrame; break;
-                                default:
-                                    throw new Exception($"ParseLeafNode not valid arg: {_tokenizer.Token}");
-                            }
-                            _tokenizer.NextToken();
-                        }
-                        return new TidNode<TAggFn, TAggCl>(aggFn, tid, aggTsSlideTo, aggTsFrame);
+                        return new AggNode<TAggFn, TAggCl>(aggFn, aggCl, aggTsFr, aggTsTo);
                     }
                     else
                     {
@@ -149,7 +122,6 @@ namespace TimeSeriesQueryLanguage.Core
                     switch (_tokenizer.Token)
                     {
                         case TokenEnum.Agg:
-                        case TokenEnum.Tid:
                         case TokenEnum.FId:
                         case TokenEnum.Number:
                             args.Add(ParseLeafNode());

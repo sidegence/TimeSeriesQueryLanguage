@@ -30,25 +30,22 @@ namespace TimeSeriesQueryLanguage.Samples.ClientEvalImplementations
             OperationEnum operationEnum = OperationEnum.Agg,
             TAggFn? aggFn = default,
             TAggCl? aggCl = default,
-            AggTimeIntervalEnum aggTsSlideTo = AggTimeIntervalEnum.M0,
-            AggTimeIntervalEnum aggTsFrame = AggTimeIntervalEnum.M0,
+            AggTimeIntervalEnum aggTsFr = AggTimeIntervalEnum.Zero,
+            AggTimeIntervalEnum aggTsTo = AggTimeIntervalEnum.Zero,
             int i = 0
         ) where TAggFn : Enum where TAggCl : Enum
         {
             if (aggFn == null || !Enum.IsDefined(typeof(TAggFn), aggFn) || aggCl == null || !Enum.IsDefined(typeof(TAggCl), aggCl))
                 throw new ArgumentNullException("Eval<TAggFn, TAggCl> type arguments cannot be null or undefined");
 
-            var tsSlideTo = (await Db.Tickers.FirstAsync()).ts - AggTimeIntervalEnumToTimeSpan.Map(aggTsSlideTo);
-            var tsFrameMin = tsSlideTo - AggTimeIntervalEnumToTimeSpan.Map(aggTsFrame);
-            var tickers = Db.Tickers.Where(_ => _.ts <= tsSlideTo && _.ts >= tsFrameMin);
+            var to = DateTime.UtcNow - AggTimeIntervalEnumToTimeSpan.Map(aggTsTo);
+            var fr = to - AggTimeIntervalEnumToTimeSpan.Map(aggTsFr);
+            var tickers = Db.Tickers.Where(_ => _.ts >= fr && _.ts <= to);
 
             var column = Helper.Convert<AggregateColumnsEnum>(aggCl.ToString());
             var columnFunc = Helper.Map(column);
 
             if (operationEnum == OperationEnum.Fid)
-                return i;
-
-            if (operationEnum == OperationEnum.Tid)
                 return i;
 
             switch (Helper.Convert<AggregateFunctionsEnum>(aggFn.ToString()))
@@ -59,19 +56,7 @@ namespace TimeSeriesQueryLanguage.Samples.ClientEvalImplementations
                 case AggregateFunctionsEnum.Min: return await tickers.MinAsync(columnFunc);
                 case AggregateFunctionsEnum.Max: return await tickers.MaxAsync(columnFunc);
                 case AggregateFunctionsEnum.Avg: return await tickers.AverageAsync(columnFunc);
-                case AggregateFunctionsEnum.Dlt:
-                    {
-                        var fst = Helper.Map(await tickers.FirstAsync(), column);
-                        var lst = Helper.Map(await tickers.LastAsync(), column);
-                        return fst == 0 ? 0 : (lst - fst) / fst * 100.0m;
-                    }
-                case AggregateFunctionsEnum.MMP:
-                    {
-                        var min = await tickers.MinAsync(columnFunc);
-                        var max = await tickers.MaxAsync(columnFunc);
-                        var lst = Helper.Map(await tickers.LastAsync(), column);
-                        return min == max ? 50.0m : (lst - min) * (100 - 0) / (max - min);
-                    }
+                case AggregateFunctionsEnum.Dlt: return (Helper.Map(await tickers.LastOrDefaultAsync(), column) - Helper.Map(await tickers.FirstOrDefaultAsync(), column)) / Helper.Map(await tickers.FirstOrDefaultAsync(), column) * 100m;
             }
 
             return 0.0m;

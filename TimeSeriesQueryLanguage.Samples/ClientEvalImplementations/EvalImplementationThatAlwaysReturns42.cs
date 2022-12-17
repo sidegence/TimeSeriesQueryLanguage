@@ -14,8 +14,8 @@ namespace TimeSeriesQueryLanguage.Samples.ClientEvalImplementations
             OperationEnum operation = OperationEnum.Agg,
             AggegrateFunctions? aggFn = default,
             AggegrateColumns? aggCl = default, 
-            AggTimeIntervalEnum aggTsSlideTo = AggTimeIntervalEnum.M0, 
-            AggTimeIntervalEnum aggTsFrame = AggTimeIntervalEnum.M0,
+            AggTimeIntervalEnum aggTsFr = AggTimeIntervalEnum.Zero, 
+            AggTimeIntervalEnum aggTsTo = AggTimeIntervalEnum.Zero,
             int i = 0
         ) where AggegrateFunctions : Enum where AggegrateColumns : Enum
         {

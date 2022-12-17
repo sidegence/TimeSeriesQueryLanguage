@@ -17,11 +17,11 @@ namespace TimeSeriesQueryLanguage.Tests
             {
                 foreach (var aggCl in Enum.GetValues(typeof(AggregateColumnsEnum)))
                 {
-                    foreach (var aggTsSlideTo in Enum.GetValues(typeof(AggTimeIntervalEnum)))
+                    foreach (var aggTsFr in Enum.GetValues(typeof(AggTimeIntervalEnum)))
                     {
-                        foreach (var aggTsFrame in Enum.GetValues(typeof(AggTimeIntervalEnum)))
+                        foreach (var aggTsTo in Enum.GetValues(typeof(AggTimeIntervalEnum)))
                         {
-                            string fn = $"ag({aggFn},{aggCl},To.{aggTsSlideTo},Fr.{aggTsFrame})";
+                            string fn = $"ag({aggFn},{aggCl},Fr.{aggTsFr},To.{aggTsTo})";
                             var result = new TimeSeriesQueryLanguageParser<AggregateFunctionsEnum, AggregateColumnsEnum>().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
                             result.Should().Be(42);
                         }

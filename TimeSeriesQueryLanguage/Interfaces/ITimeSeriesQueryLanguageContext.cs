@@ -13,8 +13,8 @@ namespace TimeSeriesQueryLanguage.Interfaces
             OperationEnum operationEnum = OperationEnum.Agg,
             TAggFn? aggFn = default,
             TAggCl? aggCl = default, 
-            AggTimeIntervalEnum aggTsSlideTo = AggTimeIntervalEnum.M0, 
-            AggTimeIntervalEnum aggTsFrame = AggTimeIntervalEnum.M0,
+            AggTimeIntervalEnum aggTsFr = AggTimeIntervalEnum.Zero, 
+            AggTimeIntervalEnum aggTsTo = AggTimeIntervalEnum.Zero,
             int i = 0
         ) where TAggFn : Enum where TAggCl : Enum;
     }

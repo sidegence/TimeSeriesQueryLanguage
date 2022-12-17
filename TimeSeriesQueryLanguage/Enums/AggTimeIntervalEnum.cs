@@ -8,7 +8,7 @@ namespace TimeSeriesQueryLanguage.Enums
 {
     public enum AggTimeIntervalEnum
     {
-        M0 = 0, M1, M2, M5, M10, M15, M30, M45, H1, H2, H3, H5, H8, H17, H23, D1, D2, D3, D4, D5, D6, D7, D28, m1, m3, m6, m9, Y1, Y2, Y5, C1
+        Zero = 0, M1, M2, M5, M10, M15, M30, M45, H1, H2, H3, H5, H8, H17, H23, D1, D2, D3, D4, D5, D6, D7, D28, m1, m3, m6, m9, Y1, Y2, Y5, C1
     }
 
     public static class AggTimeIntervalEnumToTimeSpan
@@ -17,7 +17,7 @@ namespace TimeSeriesQueryLanguage.Enums
         {
             switch (aggTs)
             {
-                case AggTimeIntervalEnum.M0: return TimeSpan.Zero;
+                case AggTimeIntervalEnum.Zero: return TimeSpan.Zero;
                 case AggTimeIntervalEnum.M1: return TimeSpan.FromMinutes(1);
                 case AggTimeIntervalEnum.M2: return TimeSpan.FromMinutes(2);
                 case AggTimeIntervalEnum.M5: return TimeSpan.FromMinutes(5);

@@ -28,8 +28,8 @@ namespace TimeSeriesQueryLanguage.Core
         public decimal Number = 0;
         public TAggFn? AggFn = default;
         public TAggCl? AggCl = default;
-        public AggTimeIntervalEnum AggTsSlideTo;
-        public AggTimeIntervalEnum AggTsFrame;
+        public AggTimeIntervalEnum AggTsFr;
+        public AggTimeIntervalEnum AggTsTo;
 
         public void NextChar()
         {
@@ -107,10 +107,6 @@ namespace TimeSeriesQueryLanguage.Core
                 {
                     Token = TokenEnum.Agg;
                 }
-                else if (sbs == "tid")
-                {
-                    Token = TokenEnum.Tid;
-                }
                 else if (sbs == "fid")
                 {
                     Token = TokenEnum.FId;
@@ -139,13 +135,13 @@ namespace TimeSeriesQueryLanguage.Core
                 {
                     Token = TokenEnum.AggCl; AggCl = (TAggCl)Enum.Parse(typeof(TAggCl), sbs);
                 }
-                else if (sbs.StartsWith("To.") && dot > 0)
-                {
-                    Token = TokenEnum.AggTsSlideTo; AggTsSlideTo = (AggTimeIntervalEnum)Enum.Parse(typeof(AggTimeIntervalEnum), sbs.Substring(dot + 1));
-                }
                 else if (sbs.StartsWith("Fr.") && dot > 0)
                 {
-                    Token = TokenEnum.AggTsFrame; AggTsFrame = (AggTimeIntervalEnum)Enum.Parse(typeof(AggTimeIntervalEnum), sbs.Substring(dot + 1));
+                    Token = TokenEnum.AggTsFr; AggTsFr = (AggTimeIntervalEnum)Enum.Parse(typeof(AggTimeIntervalEnum), sbs.Substring(dot + 1));
+                }
+                else if (sbs.StartsWith("To.") && dot > 0)
+                {
+                    Token = TokenEnum.AggTsTo; AggTsTo = (AggTimeIntervalEnum)Enum.Parse(typeof(AggTimeIntervalEnum), sbs.Substring(dot + 1));
                 }
                 else
                     throw new Exception($"{_Command} : Bad language syntax");

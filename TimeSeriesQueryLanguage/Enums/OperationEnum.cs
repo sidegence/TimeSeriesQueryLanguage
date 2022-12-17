@@ -10,6 +10,5 @@ namespace TimeSeriesQueryLanguage.Enums
     {
         Agg,
         Fid,
-        Tid,
     }
 }
