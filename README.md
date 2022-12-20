@@ -49,14 +49,14 @@ public class YOUREvalImplementation : ITimeSeriesQueryLanguageContext
 
         switch (aggFn)
         {
-            case AggFn.Cnt: return await tickers.CountAsync();
+            case AggFn.Avg: return await tickers.AvgAsync(_ => _.Price);
         }
         return 0.0m;
     }
 }
 
 // Average column price for the last day (D1), starting now (Zero)
-var c1 = await YOUREvalImplementation.Eval("ag(Avg,price,Fr.D1,To.Zero)");										
+var c1 = await YOUREvalImplementation.Eval("ag(Avg,Price,Fr.D1,To.Zero)");										
 
 ```
 
@@ -91,10 +91,7 @@ Logical Operators:
 
 ## Support
 
-It is currently working with millions of crypto currency tickers and indicators at www.sidegence.com
-
-For support, email sidegence@gmail.com
-
+It is currently working with millions of crypto currency tickers and indicators at https://sidegence.com/
 
 ## Optimizations
 1)
