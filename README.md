@@ -5,11 +5,12 @@ This is a library to aggregate values on user defined time series datasets.
 
 The syntax is simple yet powerfull because it can compare series of data.
 
-    Example: "ag(Avg, Price, Fr.H1, To.Zero)"  means ''Get average price for the last hour''
-    Example: ">(ag(Avg, Price, Fr.H1, To.Zero),ag(Avg, Price, Fr.D1, To.Zero))" means ''Is price average for the last hour bigger than the price average for he last 24h''
+    Example 1: "ag(Avg, Price, Fr.H1, To.Zero)"  means 'Get average price for the last hour'
+    Example 2: "ag(MMP, Price, Fr.D1, To.Zero)"  means 'Get min max position of current price for the last 24 hours'
+    Example 3: ">(ag(Avg, Price, Fr.H1, To.Zero),ag(Avg, Price, Fr.D1, To.Zero))" means 'Is price average for the last hour bigger than the price average for he last 24h'
 
 For flexibility "Avg" is a function defined by your own implementation.
-On some applications, its common to have Avg, Count, StandardDeviation, Min, Max, etc 
+On some applications, it is common to have Avg, Count, StandardDeviation, Min, Max, etc 
 
 And "Price" is again, defined by your own dataset implementation. Tipically columns in tables where you want to aggregate values.
 On financial applications, its common to have Price, QuantityBought, QuantitySold, etc
@@ -30,7 +31,11 @@ public class YOUREvalImplementation : ITimeSeriesQueryLanguageContext
     }
     public async Task<decimal> Eval(string fn)
     {
+        // set the language engine and parse the formula
         var tsqlp = new TimeSeriesQueryLanguageParser().Set(fn)?.Parse();
+        
+        // execute the engine's Eval entry point function
+        // as the argument is this class, the engine will call back on your Eval implementation below.
         return tsqlp == null ? 0.0m : await tsqlp.Eval(this);
     }
 
@@ -49,6 +54,8 @@ public class YOUREvalImplementation : ITimeSeriesQueryLanguageContext
 
         switch (aggFn)
         {
+            // implement your aggregate definitions. Here is the Avg as an example
+            // So, whenever the engine finds a 'Avg' as part of AggFn enum, it will execute your Eval implementation function with te appropriate arguments
             case AggFn.Avg: return await tickers.AvgAsync(_ => _.Price);
         }
         return 0.0m;
