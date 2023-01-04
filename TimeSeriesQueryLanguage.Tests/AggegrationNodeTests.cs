@@ -3,13 +3,14 @@ using TimeSeriesQueryLanguage.Enums;
 using TimeSeriesQueryLanguage.Interfaces;
 using TimeSeriesQueryLanguage.Samples.ClientEvalImplementations;
 using FluentAssertions;
+using System.Collections.Concurrent;
 
 namespace TimeSeriesQueryLanguage.Tests
 {
     public class AggegrationNodeTests
     {
         [Test]
-        public void Agg_WhenCalledEvalImplementationThatAlwaysReturns42_ShouldAlwaysReturn42()
+        public async Task Agg_WhenCalledEvalImplementationThatAlwaysReturns42_ShouldAlwaysReturn42()
         {
             var clientEvalImplementation = new EvalImplementationThatAlwaysReturns42();
 
@@ -22,8 +23,14 @@ namespace TimeSeriesQueryLanguage.Tests
                         foreach (var aggTsTo in Enum.GetValues(typeof(AggTimeIntervalEnum)))
                         {
                             string fn = $"ag({aggFn},{aggCl},Fr.{aggTsFr},To.{aggTsTo})";
-                            var result = new TimeSeriesQueryLanguageParser<AggregateFunctionsEnum, AggregateColumnsEnum>().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
-                            result.Should().Be(42);
+                            var expression = new TimeSeriesQueryLanguageParser<AggregateFunctionsEnum, AggregateColumnsEnum>().Set(fn);
+                            Assert.NotNull(expression);
+
+                            var parsing = expression.Parse();
+                            Assert.NotNull(parsing);
+
+                            var eval = await parsing.Eval(clientEvalImplementation);
+                            eval.Should().Be(42);
                         }
                     }
                 }

@@ -71,32 +71,31 @@ You can query your data with aggregates, algebraic and logical operators.
 The engine will interpret the function syntax, validate it and recall the Eval function on you implementation class, recursing all calls.
 
 Aggregate Operators: 
-    ag - main aggregation operator
-    fid - formula id, usefull to implement as a persisted formula
+    ''ag'' main aggregation operator
+    ''fid'' formula id, usefull to implement as a persisted formula
 
 Algebraic Operators: 
-    + - Add 
-    * - Mult 
-    / - Div
+    ''+'' Add 
+    ''*'' Mult 
+    ''/'' Div
 
 Transform Operators: 
-    sc - value on scale1 to scale2
+    ''sc'' value on scale1 to scale2
 
 Logical Operators: 
-    & - and
-    | - or
-    < - less then 
-    > - bigger then
-    in - in between 2 values
+    ''&'' and
+    ''|'' or
+    ''<'' less then 
+    ''>'' bigger then
+    ''in'' in between 2 values
 
 ## Support
 
 It is currently working with millions of crypto currency tickers and indicators at https://sidegence.com/
 
 ## Optimizations
-1)
-All Eval args have default values, so can be queried as "ag(Sum, Quantity, Fr.H1)"  means ''Get sum of quantity for the last hour''
+All Eval args have default values, so can be queried as "ag(Sum, Quantity, Fr.H1)"  means ''Get sum of quantity for the last hour'' 
+assuming the last arg ''To'' as To.Zero (which is now)
 
-2)
-When quering millions of records to aggregate, make sure to use a fast data series access - EF may not do the job - Stored Procs may be more effective.
-It is up to your implementation which data series access to use. This lib will only manipulate results, based on the syntax.
+When quering millions of records to aggregate, make sure to use a fast data series access - EFCore may not do the job - Stored procs in the db server may be way more effective.
+It is up to your implementation which data series access to use. This lib will only compile and interpret results.

@@ -19,6 +19,8 @@ namespace TimeSeriesQueryLanguage.Samples.ClientEvalImplementations
             int i = 0
         ) where AggegrateFunctions : Enum where AggegrateColumns : Enum
         {
+            var to = DateTime.UtcNow - AggTimeIntervalEnumToTimeSpan.Map(aggTsTo);
+            var fr = to - AggTimeIntervalEnumToTimeSpan.Map(aggTsFr);
             return await Task.FromResult(42);
         }
     }
