@@ -24,6 +24,11 @@ namespace TimeSeriesQueryLanguage.Core
             NextToken();
         }
 
+        public string GetCommand()
+        {
+            return _Command;
+        }
+
         public TokenEnum Token;
         public decimal Number = 0;
         public TAggFn? AggFn = default;
@@ -148,5 +153,4 @@ namespace TimeSeriesQueryLanguage.Core
             }
         }
     }
-
 }

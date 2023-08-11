@@ -1,16 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using TimeSeriesQueryLanguage.Enums;
 using TimeSeriesQueryLanguage.Functions;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace TimeSeriesQueryLanguage.Core
 {
     public class TimeSeriesQueryLanguageParser<TAggFn, TAggCl> where TAggFn : Enum where TAggCl : Enum
     {
         Tokenizer<TAggFn, TAggCl>? _tokenizer;
+
+        Random _random = new Random(Guid.NewGuid().GetHashCode());
+
+        readonly Array _functionEnum = Enum.GetValues(typeof(FunctionEnum));
+        readonly Array _argFunctionEnum = Enum.GetValues(typeof(ArgFunctionEnum));
+        readonly Array _aggTimeIntervalEnum = Enum.GetValues(typeof(AggTimeIntervalEnum));
+        readonly Array _TAggFn = Enum.GetValues(typeof(TAggFn));
+        readonly Array _TAggCl = Enum.GetValues(typeof(TAggCl));
 
         public TimeSeriesQueryLanguageParser()
         {
@@ -21,10 +32,21 @@ namespace TimeSeriesQueryLanguage.Core
             Set(text);
         }
 
+        public string Get()
+        {
+            return _tokenizer?.GetCommand() ?? "";
+        }
+
         public TimeSeriesQueryLanguageParser<TAggFn, TAggCl> Set(string text)
         {
             _tokenizer = new Tokenizer<TAggFn, TAggCl>(text);
             return this;
+        }
+
+        public TimeSeriesQueryLanguageParser<TAggFn, TAggCl> Random(int maxLevels)
+        {
+            var text = Rnd(maxLevels);
+            return Set(text);
         }
 
         public AbstractNode? Parse()
@@ -162,6 +184,46 @@ namespace TimeSeriesQueryLanguage.Core
             {
                 throw new Exception("ParseFunctionNode no open parens");
             }
+        }
+
+        private string Rnd(int level)
+        {
+            if (level == 0)
+                return RndFunction(level);
+
+            level--;
+            return RndArgFunction(level);
+        }
+
+        private string RndFunction(int level)
+        {
+            var f = RndArrVal(_functionEnum);
+            switch (f)
+            {
+                case FunctionEnum.Number: return $"{_random.NextDouble().ToString("0.00")}";
+                case FunctionEnum.Agg: return $"ag({RndArrVal(_TAggFn)},{RndArrVal(_TAggCl)},Fr.{RndArrVal(_aggTimeIntervalEnum)},To.{RndArrVal(_aggTimeIntervalEnum)})";
+                default: throw new NotImplementedException(f?.ToString());
+            }
+        }
+
+        private string RndArgFunction(int level)
+        {
+            var af = RndArrVal(_argFunctionEnum);
+            switch (af)
+            {
+                case ArgFunctionEnum.And: return $"&({Rnd(level)},{Rnd(level)})";
+                case ArgFunctionEnum.Or: return $"|({Rnd(level)},{Rnd(level)})";
+                case ArgFunctionEnum.V1mV2: return $"<({Rnd(level)},{Rnd(level)})";
+                case ArgFunctionEnum.V1lV2: return $">({Rnd(level)},{Rnd(level)})";
+                case ArgFunctionEnum.V1inV2V3: return $"in({Rnd(level)},{Rnd(level)},{Rnd(level)})";
+                case ArgFunctionEnum.Function: return RndFunction(level);
+                default: throw new NotImplementedException(af?.ToString());
+            }
+        }
+
+        private object? RndArrVal(Array array)
+        {
+            return array.GetValue(_random.Next(array.Length));
         }
     }
 }

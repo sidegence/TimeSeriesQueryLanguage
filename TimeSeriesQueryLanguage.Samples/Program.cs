@@ -29,7 +29,7 @@ Console.WriteLine("Eval(Lst, qty) ...: " + await i2.Eval(aggFn: AggregateFunctio
 Console.WriteLine("Eval(Avg, qty) ...: " + await i2.Eval(aggFn: AggregateFunctionsEnum.Avg, aggCl: AggregateColumnsEnum.qty));
 Console.WriteLine();
 
-SampleDbContext? sampleDbContext;
+SampleDbContext? sampleDbContext = null!;
 await PopulateDb(10);
 if (sampleDbContext == null) return;
 PrintDb();
