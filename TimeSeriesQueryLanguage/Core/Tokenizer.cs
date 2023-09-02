@@ -36,6 +36,10 @@ namespace TimeSeriesQueryLanguage.Core
         public AggTimeIntervalEnum AggTsFr;
         public AggTimeIntervalEnum AggTsTo;
 
+        private string[] _TAggFnEnumNames = Enum.GetNames(typeof(TAggFn));
+        private string[] _TAggClEnumNames = Enum.GetNames(typeof(TAggCl));
+        private string[] _AggTimeIntervalEnumNames = Enum.GetNames(typeof(AggTimeIntervalEnum));
+        
         public void NextChar()
         {
             _CurrentChar = _CommandCharIndex < _Command.Length ? _Command[_CommandCharIndex] : '\0';
@@ -86,70 +90,78 @@ namespace TimeSeriesQueryLanguage.Core
                     sb.Append(_CurrentChar);
                     NextChar();
                 }
-                var sbs = sb.ToString();
-                var dot = sbs.IndexOf(".");
-                if (sbs == "*")
+                var currentWord = sb.ToString();
+                var dot = currentWord.IndexOf(".");
+                if (currentWord == "*")
                 {
                     Token = TokenEnum.Mult;
                 }
-                else if (sbs == "/")
+                else if (currentWord == "/")
                 {
                     Token = TokenEnum.Div;
                 }
-                else if (sbs == "+")
+                else if (currentWord == "+")
                 {
                     Token = TokenEnum.Add;
                 }
-                else if (sbs == "&")
+                else if (currentWord == "&")
                 {
                     Token = TokenEnum.And;
                 }
-                else if (sbs == "|")
+                else if (currentWord == "|")
                 {
                     Token = TokenEnum.Or;
                 }
-                else if (sbs == "ag")
+                else if (currentWord == "ag")
                 {
                     Token = TokenEnum.Agg;
                 }
-                else if (sbs == "fid")
+                else if (currentWord == "fid")
                 {
                     Token = TokenEnum.FId;
                 }
-                else if (sbs == ">")
+                else if (currentWord == ">")
                 {
                     Token = TokenEnum.V1mV2;
                 }
-                else if (sbs == "<")
+                else if (currentWord == "<")
                 {
                     Token = TokenEnum.V1lV2;
                 }
-                else if (sbs == "sc")
+                else if (currentWord == "sc")
                 {
                     Token = TokenEnum.Scale;
                 }
-                else if (sbs == "in")
+                else if (currentWord == "in")
                 {
                     Token = TokenEnum.V1inV2V3;
                 }
-                else if (Enum.GetNames(typeof(TAggFn)).Contains(sbs))
+                else if (_TAggFnEnumNames.Contains(currentWord))
                 {
-                    Token = TokenEnum.AggFn; AggFn = (TAggFn)Enum.Parse(typeof(TAggFn), sbs);
+                    Token = TokenEnum.AggFn; 
+                    AggFn = (TAggFn)Enum.Parse(typeof(TAggFn), currentWord);
                 }
-                else if (Enum.GetNames(typeof(TAggCl)).Contains(sbs))
+                else if (_TAggClEnumNames.Contains(currentWord))
                 {
-                    Token = TokenEnum.AggCl; AggCl = (TAggCl)Enum.Parse(typeof(TAggCl), sbs);
+                    Token = TokenEnum.AggCl; 
+                    AggCl = (TAggCl)Enum.Parse(typeof(TAggCl), currentWord);
                 }
-                else if (sbs.StartsWith("Fr.") && dot > 0)
+                else if (currentWord.StartsWith("Fr.") && dot > 0)
                 {
-                    Token = TokenEnum.AggTsFr; AggTsFr = (AggTimeIntervalEnum)Enum.Parse(typeof(AggTimeIntervalEnum), sbs.Substring(dot + 1));
+                    Token = TokenEnum.AggTsFr;
+                    var currentWord2ndpart = currentWord.Substring(dot + 1);
+                    if (!_AggTimeIntervalEnumNames.Contains(currentWord2ndpart)) throw new Exception($"ERR: failed to find AggTimeIntervalEnum:'{currentWord}' in '{_Command}'");
+                    AggTsFr = (AggTimeIntervalEnum)Enum.Parse(typeof(AggTimeIntervalEnum), currentWord2ndpart);
                 }
-                else if (sbs.StartsWith("To.") && dot > 0)
+                else if (currentWord.StartsWith("To.") && dot > 0)
                 {
-                    Token = TokenEnum.AggTsTo; AggTsTo = (AggTimeIntervalEnum)Enum.Parse(typeof(AggTimeIntervalEnum), sbs.Substring(dot + 1));
+                    Token = TokenEnum.AggTsTo;
+                    var currentWord2ndpart = currentWord.Substring(dot + 1);
+                    if (!_AggTimeIntervalEnumNames.Contains(currentWord2ndpart)) throw new Exception($"ERR: failed to find AggTimeIntervalEnum:'{currentWord}' in '{_Command}'");
+                    AggTsTo = (AggTimeIntervalEnum)Enum.Parse(typeof(AggTimeIntervalEnum), currentWord2ndpart);
                 }
                 else
-                    throw new Exception($"{_Command} : Bad language syntax");
+                    throw new Exception($"ERR: '{currentWord}' in '{_Command}'");
             }
         }
     }

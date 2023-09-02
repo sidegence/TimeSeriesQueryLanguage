@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using TimeSeriesQueryLanguage.Core;
 using TimeSeriesQueryLanguage.Samples.ClientEvalImplementations;
 
@@ -5,6 +6,10 @@ namespace TimeSeriesQueryLanguage.Tests
 {
     public class RandomTests
     {
+        public enum AggregateColumnsTicEnum { PRC, CNTB, QTYB, CNTS, QTYS }
+        public enum AggregateColumnsIndEnum { PRC, SMA20, EMA12, EMA26, RSI14, MACD, BUB20, BLB20, CMF }
+        public enum AggregateFunctionEnum { Cnt, Fst, Snd, Pen, Lst, Min, Max, Avg, Sum, Dlt, MMP, StD, Var }
+
         [Test]
         public void When_using_RandomizeText_should_always_give_a_valid_syntax()
         {
@@ -21,10 +26,6 @@ namespace TimeSeriesQueryLanguage.Tests
                 Assert.DoesNotThrowAsync(async () => await parsing.Eval(clientEvalImplementation));
             });
         }
-
-        public enum AggregateColumnsTicEnum { PRC, CNTB, QTYB, CNTS, QTYS }
-        public enum AggregateColumnsIndEnum { PRC, SMA20, EMA12, EMA26, RSI14, MACD, BUB20, BLB20, CMF }
-        public enum AggregateFunctionEnum { Cnt, Fst, Snd, Pen, Lst, Min, Max, Avg, Sum, Dlt, MMP, StD, Var }
 
         [Test]
         public void NOT_TO_COMMIT()
