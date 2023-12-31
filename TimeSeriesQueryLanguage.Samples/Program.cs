@@ -1,10 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using System.Diagnostics;
-using TimeSeriesQueryLanguage.Core;
 using TimeSeriesQueryLanguage.Enums;
-using TimeSeriesQueryLanguage.Interfaces;
 using TimeSeriesQueryLanguage.Samples.ClientEvalImplementations;
 using TimeSeriesQueryLanguage.Samples.Persistence;
 
@@ -19,7 +16,7 @@ Console.WriteLine();
 
 var json = File.ReadAllText(@"Persistence\db1.json");
 Console.WriteLine("EvalImplementationOnAJsonStore");
-var i2 = new EvalImplementationOnAJsonStore(JsonConvert.DeserializeObject<List<Ticker>>(json));
+var i2 = new EvalImplementationOnAJsonStore(JsonConvert.DeserializeObject<List<Ticker>>(json)!);
 Console.WriteLine("Eval(Cnt) ...: " + await i2.Eval<AggregateFunctionsEnum, AggregateColumnsEnum>(aggFn: AggregateFunctionsEnum.Cnt));
 Console.WriteLine("Eval(Fst, price) ...: " + await i2.Eval(aggFn: AggregateFunctionsEnum.Fst, aggCl: AggregateColumnsEnum.price));
 Console.WriteLine("Eval(Lst, price) ...: " + await i2.Eval(aggFn: AggregateFunctionsEnum.Lst, aggCl: AggregateColumnsEnum.price));

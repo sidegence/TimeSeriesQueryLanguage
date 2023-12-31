@@ -1,9 +1,7 @@
+using FluentAssertions;
 using TimeSeriesQueryLanguage.Core;
 using TimeSeriesQueryLanguage.Enums;
-using TimeSeriesQueryLanguage.Interfaces;
 using TimeSeriesQueryLanguage.Samples.ClientEvalImplementations;
-using FluentAssertions;
-using System.Collections.Concurrent;
 
 namespace TimeSeriesQueryLanguage.Tests
 {
@@ -24,12 +22,12 @@ namespace TimeSeriesQueryLanguage.Tests
                         {
                             string fn = $"ag({aggFn},{aggCl},Fr.{aggTsFr},To.{aggTsTo})";
                             var expression = new TimeSeriesQueryLanguageParser<AggregateFunctionsEnum, AggregateColumnsEnum>().Set(fn);
-                            Assert.NotNull(expression);
+                            expression.Should().NotBeNull();
 
                             var parsing = expression.Parse();
-                            Assert.NotNull(parsing);
+                            parsing.Should().NotBeNull();
 
-                            var eval = await parsing.Eval(clientEvalImplementation);
+                            var eval = await parsing!.Eval(clientEvalImplementation);
                             eval.Should().Be(42);
                         }
                     }

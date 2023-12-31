@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TimeSeriesQueryLanguage.Enums
+﻿namespace TimeSeriesQueryLanguage.Enums
 {
     public enum TokenEnum
     {
@@ -25,5 +19,7 @@ namespace TimeSeriesQueryLanguage.Enums
         V1lV2,
         Scale,
         V1inV2V3,
+        V1V2V3Inc,
+        V1V2V3Dec,
     }
 }

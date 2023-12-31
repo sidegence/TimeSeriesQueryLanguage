@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TimeSeriesQueryLanguage.Enums
+﻿namespace TimeSeriesQueryLanguage.Enums
 {
     public enum FunctionEnum
     {
@@ -17,6 +11,8 @@ namespace TimeSeriesQueryLanguage.Enums
         V1mV2,
         V1lV2,
         V1inV2V3,
+        V1V2V3Inc,
+        V1V2V3Dec,
         Function,
     }
 }

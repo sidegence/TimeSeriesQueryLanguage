@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 using System.Text;
-using System.Threading.Tasks;
 using TimeSeriesQueryLanguage.Enums;
 
 namespace TimeSeriesQueryLanguage.Core
@@ -135,6 +131,14 @@ namespace TimeSeriesQueryLanguage.Core
                 else if (currentWord == "in")
                 {
                     Token = TokenEnum.V1inV2V3;
+                }
+                else if (currentWord == "inc")
+                {
+                    Token = TokenEnum.V1V2V3Inc;
+                }
+                else if (currentWord == "dec")
+                {
+                    Token = TokenEnum.V1V2V3Dec;
                 }
                 else if (_TAggFnEnumNames.Contains(currentWord))
                 {

@@ -95,6 +95,8 @@ Logical Operators:
     ''<'' less then 
     ''>'' bigger then
     ''in'' in between 2 values
+    ''inc'' sequence of 3 is increasing
+    ''dec'' sequence of 3 is decreasing
 
 ## Support
 

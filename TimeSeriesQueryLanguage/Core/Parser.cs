@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using TimeSeriesQueryLanguage.Enums;
+﻿using TimeSeriesQueryLanguage.Enums;
 using TimeSeriesQueryLanguage.Functions;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace TimeSeriesQueryLanguage.Core
 {
@@ -66,6 +58,8 @@ namespace TimeSeriesQueryLanguage.Core
                 case TokenEnum.V1lV2:
                 case TokenEnum.Scale:
                 case TokenEnum.V1inV2V3:
+                case TokenEnum.V1V2V3Inc:
+                case TokenEnum.V1V2V3Dec:
                     return ParseFunctionNode(_tokenizer.Token);
                 default:
                     break;
@@ -159,6 +153,8 @@ namespace TimeSeriesQueryLanguage.Core
                         case TokenEnum.V1lV2:
                         case TokenEnum.Scale:
                         case TokenEnum.V1inV2V3:
+                        case TokenEnum.V1V2V3Inc:
+                        case TokenEnum.V1V2V3Dec:
                             args.Add(ParseFunctionNode(_tokenizer.Token));
                             break;
                         default:
@@ -177,6 +173,8 @@ namespace TimeSeriesQueryLanguage.Core
                     case TokenEnum.V1lV2: return new V1lV2Node(args);
                     case TokenEnum.Scale: return new ScaleNode(args);
                     case TokenEnum.V1inV2V3: return new V1inV2V3Node(args);
+                    case TokenEnum.V1V2V3Inc: return new V1V2V3IncNode(args);
+                    case TokenEnum.V1V2V3Dec: return new V1V2V3DecNode(args);
                 }
                 throw new Exception("ParseFunctionNode not a valid token");
             }
@@ -216,6 +214,8 @@ namespace TimeSeriesQueryLanguage.Core
                 case ArgFunctionEnum.V1mV2: return $"<({Rnd(level)},{Rnd(level)})";
                 case ArgFunctionEnum.V1lV2: return $">({Rnd(level)},{Rnd(level)})";
                 case ArgFunctionEnum.V1inV2V3: return $"in({Rnd(level)},{Rnd(level)},{Rnd(level)})";
+                case ArgFunctionEnum.V1V2V3Inc: return $"inc({Rnd(level)},{Rnd(level)},{Rnd(level)})";
+                case ArgFunctionEnum.V1V2V3Dec: return $"dec({Rnd(level)},{Rnd(level)},{Rnd(level)})";
                 case ArgFunctionEnum.Function: return RndFunction(level);
                 default: throw new NotImplementedException(af?.ToString());
             }

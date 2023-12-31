@@ -1,8 +1,6 @@
-using TimeSeriesQueryLanguage.Core;
-using TimeSeriesQueryLanguage.Enums;
-using TimeSeriesQueryLanguage.Interfaces;
-using TimeSeriesQueryLanguage.Samples.ClientEvalImplementations;
 using FluentAssertions;
+using TimeSeriesQueryLanguage.Core;
+using TimeSeriesQueryLanguage.Samples.ClientEvalImplementations;
 
 namespace TimeSeriesQueryLanguage.Tests
 {

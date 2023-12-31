@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TimeSeriesQueryLanguage.Enums;
+﻿using TimeSeriesQueryLanguage.Enums;
 
 namespace TimeSeriesQueryLanguage.Interfaces
 {

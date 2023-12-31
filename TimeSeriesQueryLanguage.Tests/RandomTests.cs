@@ -1,4 +1,4 @@
-using Newtonsoft.Json.Linq;
+using FluentAssertions;
 using TimeSeriesQueryLanguage.Core;
 using TimeSeriesQueryLanguage.Samples.ClientEvalImplementations;
 
@@ -18,12 +18,12 @@ namespace TimeSeriesQueryLanguage.Tests
             Parallel.ForEach(Enumerable.Range(1, 1000), _ =>
             {
                 var expression = new TimeSeriesQueryLanguageParser<AggregateFunctionsEnum, AggregateColumnsEnum>().Random(5);
-                Assert.NotNull(expression);
+                expression.Should().NotBeNull();
 
                 var parsing = expression.Parse();
-                Assert.NotNull(parsing);
+                parsing.Should().NotBeNull();
 
-                Assert.DoesNotThrowAsync(async () => await parsing.Eval(clientEvalImplementation));
+                Assert.DoesNotThrowAsync(async () => await parsing!.Eval(clientEvalImplementation));
             });
         }
 
@@ -55,11 +55,11 @@ namespace TimeSeriesQueryLanguage.Tests
             var clientEvalImplementation = new EvalImplementationThatAlwaysReturns42();
 
             var expression = new TimeSeriesQueryLanguageParser<AggregateFunctionEnum, T>().Random(3);
-            Assert.NotNull(expression);
+            expression.Should().NotBeNull();
 
             var parsing = expression.Parse();
-            Assert.NotNull(parsing);
-            Assert.DoesNotThrowAsync(async () => await parsing.Eval(clientEvalImplementation));
+            parsing.Should().NotBeNull();
+            Assert.DoesNotThrowAsync(async () => await parsing!.Eval(clientEvalImplementation));
 
             var insert = $"insert into [Formulas] ([Id],[Name],[Value],[TimeSeriesType],[Cr],[Eval],[Objective],[Fitness],[Learns],[Observations],[Up])";
             var dttime = DateTime.UtcNow.ToString("yyyy-MM-dd");
