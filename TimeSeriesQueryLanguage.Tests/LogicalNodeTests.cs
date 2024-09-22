@@ -31,7 +31,7 @@ namespace TimeSeriesQueryLanguage.Tests
             var clientEvalImplementation = new EvalImplementationThatAlwaysReturns42();
             string fn = $"|({p1},{p2})";
             var result = new TimeSeriesQueryLanguageParser<AggregateFunctionsEnum, AggregateColumnsEnum>().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
-            result.Should().Be(Convert.ToDecimal(Convert.ToBoolean(p1) || Convert.ToBoolean(p2)));
+                "<" => p1 < p2,
         }
 
         [Test]
