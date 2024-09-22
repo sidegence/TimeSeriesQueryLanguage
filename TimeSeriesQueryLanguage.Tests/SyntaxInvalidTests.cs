@@ -12,6 +12,7 @@ namespace TimeSeriesQueryLanguage.Tests
         [TestCase("*(1,")]
         [TestCase("a/")]
         [TestCase("AA")]
+        [TestCase("dow1")]
         [TestCase("/23)")]
         [TestCase("/(-(1,2),+(1,2))")]
         [Parallelizable(ParallelScope.All)]

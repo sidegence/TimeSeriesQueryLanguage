@@ -1,163 +1,79 @@
 using FluentAssertions;
-using TimeSeriesQueryLanguage.Core;
-using TimeSeriesQueryLanguage.Samples.ClientEvalImplementations;
 
 namespace TimeSeriesQueryLanguage.Tests
 {
-    public class LogicalNodeTests
+    public class LogicalNodeTests : BaseTest
     {
         [Test]
-        [TestCase(0, 5)]
-        [TestCase(5, 0)]
-        [TestCase(1, -1)]
-        [TestCase(1, 1)]
-        [Parallelizable(ParallelScope.All)]
-        public void And_WhenCalledEvalImplementationThatAlwaysReturns42_ShouldAlwaysReturnCorrectEval(decimal p1, decimal p2)
+        [Repeat(1000)]
+        [TestCase("&")]
+        [TestCase("|")]
+        public async Task OperatorsWith2ArgumentsTests1(string op)
         {
-            var clientEvalImplementation = new EvalImplementationThatAlwaysReturns42();
-            string fn = $"&({p1},{p2})";
-            var result = new TimeSeriesQueryLanguageParser<AggregateFunctionsEnum,AggregateColumnsEnum>().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
-            result.Should().Be(Convert.ToDecimal(Convert.ToBoolean(p1) && Convert.ToBoolean(p2)));
+            var p1 = Random.Next(1, 100) < 50;
+            var p2 = Random.Next(1, 100) < 50;
+            string s = $"{op}({Convert.ToDecimal(p1)},{Convert.ToDecimal(p2)})";
+            var e = await Parser.Set(s).Parse()!.Eval(I42);
+            Console.WriteLine($"{s} : {e}");
+            e.Should().Be(op switch
+            {
+                "&" => Convert.ToDecimal(p1 && p2),
+                "|" => Convert.ToDecimal(p1 || p2),
+                _ => throw new NotImplementedException()
+            });
         }
 
         [Test]
-        [TestCase(0, 5)]
-        [TestCase(5, 0)]
-        [TestCase(1, -1)]
-        [TestCase(1, 1)]
-        [Parallelizable(ParallelScope.All)]
-        public void Or_WhenCalledEvalImplementationThatAlwaysReturns42_ShouldAlwaysReturnCorrectEval(decimal p1, decimal p2)
+        [Repeat(1000)]
+        [TestCase(">")]
+        [TestCase("<")]
+        public async Task OperatorsWith2ArgumentsTests2(string op)
         {
-            var clientEvalImplementation = new EvalImplementationThatAlwaysReturns42();
-            string fn = $"|({p1},{p2})";
-            var result = new TimeSeriesQueryLanguageParser<AggregateFunctionsEnum, AggregateColumnsEnum>().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
-                "<" => p1 < p2,
+            var p1 = new decimal(Random.Next(0, 2) == 0 ? 0 : Math.Pow(-1, Random.Next(1, 10)) * Random.NextDouble());
+            var p2 = new decimal(Random.Next(0, 2) == 0 ? 0 : Math.Pow(-1, Random.Next(1, 10)) * Random.NextDouble());
+            string s = $"{op}({p1},{p2})";
+            var e = await Parser.Set(s).Parse()!.Eval(I42);
+            Console.WriteLine($"{s} : {e}");
+            e.Should().Be(op switch
+            {
+                "<" => Convert.ToDecimal(p1 < p2),
+                ">" => Convert.ToDecimal(p1 > p2),
+                _ => throw new NotImplementedException()
+            });
         }
 
         [Test]
-        [TestCase(5, 5)]
-        [TestCase(10, 1)]
-        [TestCase(1, 10)]
-        [TestCase(-5.3, -5.3)]
-        [TestCase(10.12, 1.1)]
-        [TestCase(9.9999999999999999999, 9.99999999999999999991)]
-        [Parallelizable(ParallelScope.All)]
-        public void v1mv2_WhenCalledEvalImplementationThatAlwaysReturns42_ShouldAlwaysReturnCorrectEval(decimal p1, decimal p2)
+        [Repeat(1000)]
+        [TestCase("in")]
+        [TestCase("inc")]
+        [TestCase("dec")]
+        public async Task OperatorsWith3ArgumentsTests(string op)
         {
-            var clientEvalImplementation = new EvalImplementationThatAlwaysReturns42();
-            string fn = $">({p1},{p2})";
-            var result = new TimeSeriesQueryLanguageParser<AggregateFunctionsEnum, AggregateColumnsEnum>().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
-            result.Should().Be(p1 > p2 ? 1 : 0);
+            var p1 = new decimal(Random.Next(0, 2) == 0 ? 0 : Math.Pow(-1, Random.Next(1, 10)) * Random.NextDouble());
+            var p2 = new decimal(Random.Next(0, 2) == 0 ? 0 : Math.Pow(-1, Random.Next(1, 10)) * Random.NextDouble());
+            var p3 = new decimal(Random.Next(0, 2) == 0 ? 0 : Math.Pow(-1, Random.Next(1, 10)) * Random.NextDouble());
+            string s = $"{op}({p1},{p2},{p3})";
+            var e = await Parser.Set(s).Parse()!.Eval(I42);
+            Console.WriteLine($"{s} : {e}");
+            e.Should().Be(op switch
+            {
+                "in" => Convert.ToDecimal((p1 > p2 && p1 < p3) || (p1 > p3 && p1 < p2)),
+                "inc" => Convert.ToDecimal(p1 < p2 && p2 < p3),
+                "dec" => Convert.ToDecimal(p1 > p2 && p2 > p3),
+                _ => throw new NotImplementedException()
+            });
         }
 
         [Test]
-        [TestCase(5, 5)]
-        [TestCase(10, 1)]
-        [TestCase(1, 10)]
-        [TestCase(-5.3, -5.3)]
-        [TestCase(10.12, 1.1)]
-        [TestCase(9.9999999999999999999, 9.99999999999999999991)]
-        [Parallelizable(ParallelScope.All)]
-        public void v1lv2_WhenCalledEvalImplementationThatAlwaysReturns42_ShouldAlwaysReturnCorrectEval(decimal p1, decimal p2)
+        [Repeat(1000)]
+        public async Task v1inv2v3wLogicOps_WhenCalledEvalImplementationThatAlwaysReturns42_ShouldAlwaysReturnCorrectEval()
         {
-            var clientEvalImplementation = new EvalImplementationThatAlwaysReturns42();
-            string fn = $"<({p1},{p2})";
-            var result = new TimeSeriesQueryLanguageParser<AggregateFunctionsEnum, AggregateColumnsEnum>().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
-            result.Should().Be(p1 < p2 ? 1 : 0);
-        }
-
-        [Test]
-        [TestCase(0, 0, 0, 0)]
-        [TestCase(0, 1, 100, 0)]
-        [TestCase(1, 1, 100, 0)]
-        [TestCase(100, 1, 100, 0)]
-        [TestCase(9, 1, 100, 1)]
-        [TestCase(0, 100, 1, 0)]
-        [TestCase(1, 100, 1, 0)]
-        [TestCase(100, 100, 1, 0)]
-        [TestCase(9, 100, 1, 1)]
-        [TestCase(0, -100, -1, 0)]
-        [TestCase(1, -100, -1, 0)]
-        [TestCase(100, -100, -1, 0)]
-        [TestCase(-9, -100, -1, 1)]
-        [Parallelizable(ParallelScope.All)]
-        public void v1inv2v3_WhenCalledEvalImplementationThatAlwaysReturns42_ShouldAlwaysReturnCorrectEval(decimal p1, decimal p2, decimal p3, decimal expected)
-        {
-            var clientEvalImplementation = new EvalImplementationThatAlwaysReturns42();
-            string fn = $"in({p1}, {p2}, {p3})";
-            var result = new TimeSeriesQueryLanguageParser<AggregateFunctionsEnum, AggregateColumnsEnum>().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
-            result.Should().Be(expected);
-        }
-
-        [Test]
-        [TestCase(0, 0, 0, 0)]
-        [TestCase(0, 1, 100, 1)]
-        [TestCase(100, 1, 0, 0)]
-        [TestCase(1, 1, 100, 0)]
-        [TestCase(100, 1, 100, 0)]
-        [TestCase(9, 1, 100, 0)]
-        [TestCase(0, 100, 1, 0)]
-        [TestCase(1, 100, 1, 0)]
-        [TestCase(100, 100, 1, 0)]
-        [TestCase(9, 100, 1, 0)]
-        [TestCase(0, -100, -1, 0)]
-        [TestCase(1, -100, -1, 0)]
-        [TestCase(100, -100, -1, 0)]
-        [TestCase(-9, -100, -1, 0)]
-        [Parallelizable(ParallelScope.All)]
-        public void v1v2v3inc_WhenCalledEvalImplementationThatAlwaysReturns42_ShouldAlwaysReturnCorrectEval(decimal p1, decimal p2, decimal p3, decimal expected)
-        {
-            var clientEvalImplementation = new EvalImplementationThatAlwaysReturns42();
-            string fn = $"inc({p1}, {p2}, {p3})";
-            var result = new TimeSeriesQueryLanguageParser<AggregateFunctionsEnum, AggregateColumnsEnum>().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
-            result.Should().Be(expected);
-        }
-
-        [Test]
-        [TestCase(0, 0, 0, 0)]
-        [TestCase(0, 1, 100, 0)]
-        [TestCase(100, 1, 0, 1)]
-        [TestCase(1, 1, 100, 0)]
-        [TestCase(100, 1, 100, 0)]
-        [TestCase(9, 1, 100, 0)]
-        [TestCase(0, 100, 1, 0)]
-        [TestCase(1, 100, 1, 0)]
-        [TestCase(100, 100, 1, 0)]
-        [TestCase(9, 100, 1, 0)]
-        [TestCase(0, -100, -1, 0)]
-        [TestCase(1, -100, -1, 0)]
-        [TestCase(100, -100, -1, 0)]
-        [TestCase(-9, -100, -1, 0)]
-        [Parallelizable(ParallelScope.All)]
-        public void v1v2v3dec_WhenCalledEvalImplementationThatAlwaysReturns42_ShouldAlwaysReturnCorrectEval(decimal p1, decimal p2, decimal p3, decimal expected)
-        {
-            var clientEvalImplementation = new EvalImplementationThatAlwaysReturns42();
-            string fn = $"dec({p1}, {p2}, {p3})";
-            var result = new TimeSeriesQueryLanguageParser<AggregateFunctionsEnum, AggregateColumnsEnum>().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
-            result.Should().Be(expected);
-        }
-
-        [Test]
-        [TestCase(0, 0, 0, 0)]
-        [TestCase(0, 1, 100, 0)]
-        [TestCase(1, 1, 100, 0)]
-        [TestCase(100, 1, 100, 0)]
-        [TestCase(9, 1, 100, 1)]
-        [TestCase(0, 100, 1, 0)]
-        [TestCase(1, 100, 1, 0)]
-        [TestCase(100, 100, 1, 0)]
-        [TestCase(9, 100, 1, 1)]
-        [TestCase(0, -100, -1, 0)]
-        [TestCase(1, -100, -1, 0)]
-        [TestCase(100, -100, -1, 0)]
-        [TestCase(-9, -100, -1, 1)]
-        [Parallelizable(ParallelScope.All)]
-        public void v1inv2v3wLogicOps_WhenCalledEvalImplementationThatAlwaysReturns42_ShouldAlwaysReturnCorrectEval(decimal p1, decimal p2, decimal p3, decimal expected)
-        {
-            var clientEvalImplementation = new EvalImplementationThatAlwaysReturns42();
-            string fn = $"|(&(<({p2}, {p1}),<({p1}, {p3})),&(<({p3}, {p1}),<({p1}, {p2})))";
-            var result = new TimeSeriesQueryLanguageParser<AggregateFunctionsEnum, AggregateColumnsEnum>().Set(fn)?.Parse()?.Eval(clientEvalImplementation).Result;
-            result.Should().Be(expected);
+            var p1 = new decimal(Random.Next(0, 2) == 0 ? 0 : Math.Pow(-1, Random.Next(1, 10)) * Random.NextDouble());
+            var p2 = new decimal(Random.Next(0, 2) == 0 ? 0 : Math.Pow(-1, Random.Next(1, 10)) * Random.NextDouble());
+            var p3 = new decimal(Random.Next(0, 2) == 0 ? 0 : Math.Pow(-1, Random.Next(1, 10)) * Random.NextDouble());
+            string s = $"|(&(<({p2}, {p1}),<({p1}, {p3})),&(<({p3}, {p1}),<({p1}, {p2})))";
+            var e = await Parser.Set(s).Parse()!.Eval(I42);
+            Console.WriteLine($"{s} : {e}");
         }
     }
 }

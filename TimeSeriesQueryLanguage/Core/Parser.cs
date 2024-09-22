@@ -7,7 +7,7 @@ namespace TimeSeriesQueryLanguage.Core
     {
         Tokenizer<TAggFn, TAggCl>? _tokenizer;
 
-        Random _random = new Random(Guid.NewGuid().GetHashCode());
+        readonly Random _random = new Random(Guid.NewGuid().GetHashCode());
 
         readonly Array _functionEnum = Enum.GetValues(typeof(FunctionEnum));
         readonly Array _argFunctionEnum = Enum.GetValues(typeof(ArgFunctionEnum));
@@ -48,6 +48,10 @@ namespace TimeSeriesQueryLanguage.Core
                 case TokenEnum.Agg:
                 case TokenEnum.FId:
                 case TokenEnum.Number:
+                case TokenEnum.HourOfDay:
+                case TokenEnum.DayOfWeek:
+                case TokenEnum.DayOfMonth:
+                case TokenEnum.MonthOfYear:
                     return ParseLeafNode();
                 case TokenEnum.Mult:
                 case TokenEnum.Div:
@@ -88,7 +92,7 @@ namespace TimeSeriesQueryLanguage.Core
                                 case TokenEnum.AggTsFr: aggTsFr = _tokenizer.AggTsFr; break;
                                 case TokenEnum.AggTsTo: aggTsTo = _tokenizer.AggTsTo; break;
                                 default:
-                                    throw new Exception($"ParseLeafNode not valid arg: {_tokenizer.Token}");
+                                    throw new ArgumentNullException($"ParseLeafNode not valid arg: {_tokenizer.Token}");
                             }
                             _tokenizer.NextToken();
                         }
@@ -96,8 +100,9 @@ namespace TimeSeriesQueryLanguage.Core
                     }
                     else
                     {
-                        throw new Exception("ParseLeafNode Token.Agg no open parans");
+                        throw new ArgumentNullException($"ParseLeafNode not valid CloseParens: {_tokenizer.Token}");
                     }
+
                 case TokenEnum.FId:
                     _tokenizer.NextToken();
                     if (_tokenizer.Token == TokenEnum.OpenParens)
@@ -110,7 +115,7 @@ namespace TimeSeriesQueryLanguage.Core
                             {
                                 case TokenEnum.Number: i = _tokenizer.Number; break;
                                 default:
-                                    throw new Exception($"ParseLeafNode not valid arg: {_tokenizer.Token}");
+                                    throw new ArgumentNullException($"ParseLeafNode not valid arg: {_tokenizer.Token}");
                             }
                             _tokenizer.NextToken();
                         }
@@ -118,12 +123,25 @@ namespace TimeSeriesQueryLanguage.Core
                     }
                     else
                     {
-                        throw new Exception("ParseLeafNode Token.Agg no open parans");
+                        throw new ArgumentNullException($"ParseLeafNode not valid CloseParens: {_tokenizer.Token}");
                     }
+
                 case TokenEnum.Number:
                     return new NumberNode(_tokenizer.Number);
+
+                case TokenEnum.HourOfDay:
+                    return new HourOfDayNode();
+
+                case TokenEnum.DayOfWeek:
+                    return new DateTimeNode();
+
+                case TokenEnum.DayOfMonth:
+                    return new DayOfMonthNode();
+
+                case TokenEnum.MonthOfYear:
+                    return new MonthOfYearNode();
             }
-            throw new Exception($"ParseLeafNode _tokenizer.Token{_tokenizer?.Token}: Invalid syntax");
+            throw new ArgumentNullException($"ParseLeafNode _tokenizer.Token{_tokenizer?.Token}: Invalid syntax");
         }
 
         public AbstractNode ParseFunctionNode(TokenEnum token)
@@ -140,6 +158,10 @@ namespace TimeSeriesQueryLanguage.Core
                         case TokenEnum.Agg:
                         case TokenEnum.FId:
                         case TokenEnum.Number:
+                        case TokenEnum.HourOfDay:
+                        case TokenEnum.DayOfWeek:
+                        case TokenEnum.DayOfMonth:
+                        case TokenEnum.MonthOfYear:
                             args.Add(ParseLeafNode());
                             break;
                         case TokenEnum.Comma:
@@ -158,7 +180,7 @@ namespace TimeSeriesQueryLanguage.Core
                             args.Add(ParseFunctionNode(_tokenizer.Token));
                             break;
                         default:
-                            throw new Exception($"ParseFunctionNode unexpected token: {_tokenizer.Token}");
+                            throw new ArgumentNullException($"ParseFunctionNode unexpected token: {_tokenizer.Token}");
                     }
                     _tokenizer.NextToken();
                 }
@@ -176,24 +198,24 @@ namespace TimeSeriesQueryLanguage.Core
                     case TokenEnum.V1V2V3Inc: return new V1V2V3IncNode(args);
                     case TokenEnum.V1V2V3Dec: return new V1V2V3DecNode(args);
                 }
-                throw new Exception("ParseFunctionNode not a valid token");
+                throw new NotImplementedException("ParseFunctionNode not a valid token");
             }
             else
             {
-                throw new Exception("ParseFunctionNode no open parens");
+                throw new ArgumentNullException($"ParseFunctionNode not valid OpenParens: {_tokenizer?.Token}");
             }
         }
 
         private string Rnd(int level)
         {
             if (level == 0)
-                return RndFunction(level);
+                return RndFunction();
 
             level--;
             return RndArgFunction(level);
         }
 
-        private string RndFunction(int level)
+        private string RndFunction()
         {
             var f = RndArrVal(_functionEnum);
             switch (f)
@@ -216,7 +238,7 @@ namespace TimeSeriesQueryLanguage.Core
                 case ArgFunctionEnum.V1inV2V3: return $"in({Rnd(level)},{Rnd(level)},{Rnd(level)})";
                 case ArgFunctionEnum.V1V2V3Inc: return $"inc({Rnd(level)},{Rnd(level)},{Rnd(level)})";
                 case ArgFunctionEnum.V1V2V3Dec: return $"dec({Rnd(level)},{Rnd(level)},{Rnd(level)})";
-                case ArgFunctionEnum.Function: return RndFunction(level);
+                case ArgFunctionEnum.Function: return RndFunction();
                 default: throw new NotImplementedException(af?.ToString());
             }
         }

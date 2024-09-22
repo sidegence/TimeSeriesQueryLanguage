@@ -21,5 +21,9 @@
         V1inV2V3,
         V1V2V3Inc,
         V1V2V3Dec,
+        HourOfDay,
+        DayOfWeek,
+        DayOfMonth,
+        MonthOfYear,
     }
 }

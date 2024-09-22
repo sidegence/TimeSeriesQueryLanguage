@@ -6,8 +6,8 @@ namespace TimeSeriesQueryLanguage.Core
 {
     public class Tokenizer<TAggFn,TAggCl> where TAggFn : Enum where TAggCl : Enum
     {
-        char[] _MathQualifiers = new char[] { '-', '.' };
-        char[] _Operations = new char[] { '*', '/', '+', '<', '>', '.', '&', '|' };
+        readonly char[] _MathQualifiers = new char[] { '-', '.' };
+        readonly char[] _Operations = new char[] { '*', '/', '+', '<', '>', '.', '&', '|' };
 
         readonly string _Command;
         char _CurrentChar;
@@ -154,18 +154,34 @@ namespace TimeSeriesQueryLanguage.Core
                 {
                     Token = TokenEnum.AggTsFr;
                     var currentWord2ndpart = currentWord.Substring(dot + 1);
-                    if (!_AggTimeIntervalEnumNames.Contains(currentWord2ndpart)) throw new Exception($"ERR: failed to find AggTimeIntervalEnum:'{currentWord}' in '{_Command}'");
+                    if (!_AggTimeIntervalEnumNames.Contains(currentWord2ndpart)) throw new ArgumentNullException($"ERR: failed to find AggTimeIntervalEnum:'{currentWord}' in '{_Command}'");
                     AggTsFr = (AggTimeIntervalEnum)Enum.Parse(typeof(AggTimeIntervalEnum), currentWord2ndpart);
                 }
                 else if (currentWord.StartsWith("To.") && dot > 0)
                 {
                     Token = TokenEnum.AggTsTo;
                     var currentWord2ndpart = currentWord.Substring(dot + 1);
-                    if (!_AggTimeIntervalEnumNames.Contains(currentWord2ndpart)) throw new Exception($"ERR: failed to find AggTimeIntervalEnum:'{currentWord}' in '{_Command}'");
+                    if (!_AggTimeIntervalEnumNames.Contains(currentWord2ndpart)) throw new ArgumentNullException($"ERR: failed to find AggTimeIntervalEnum:'{currentWord}' in '{_Command}'");
                     AggTsTo = (AggTimeIntervalEnum)Enum.Parse(typeof(AggTimeIntervalEnum), currentWord2ndpart);
                 }
+                else if (currentWord == "hod")
+                {
+                    Token = TokenEnum.HourOfDay;
+                }
+                else if (currentWord == "dow")
+                {
+                    Token = TokenEnum.DayOfWeek;
+                }
+                else if (currentWord == "dom")
+                {
+                    Token = TokenEnum.DayOfMonth;
+                }
+                else if (currentWord == "moy")
+                {
+                    Token = TokenEnum.MonthOfYear;
+                }
                 else
-                    throw new Exception($"ERR: '{currentWord}' in '{_Command}'");
+                    throw new NotImplementedException($"ERR: failed to find '{currentWord}' in '{_Command}' as a function declaration");
             }
         }
     }
