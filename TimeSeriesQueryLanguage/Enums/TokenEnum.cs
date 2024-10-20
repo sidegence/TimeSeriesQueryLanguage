@@ -8,7 +8,7 @@
         Comma,
         Number,
         Mult, Div, Add,
-        And, Or,
+        And, Or, NotEqual, Equal,
         Agg, 
         FId,
         AggFn,

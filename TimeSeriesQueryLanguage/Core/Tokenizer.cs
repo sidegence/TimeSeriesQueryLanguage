@@ -7,7 +7,7 @@ namespace TimeSeriesQueryLanguage.Core
     public class Tokenizer<TAggFn,TAggCl> where TAggFn : Enum where TAggCl : Enum
     {
         readonly char[] _MathQualifiers = new char[] { '-', '.' };
-        readonly char[] _Operations = new char[] { '*', '/', '+', '<', '>', '.', '&', '|' };
+        readonly char[] _Operations = new char[] { '*', '/', '+', '<', '>', '.', '&', '|', '!', '=' };
 
         readonly string _Command;
         char _CurrentChar;
@@ -107,6 +107,14 @@ namespace TimeSeriesQueryLanguage.Core
                 else if (currentWord == "|")
                 {
                     Token = TokenEnum.Or;
+                }
+                else if (currentWord == "!")
+                {
+                    Token = TokenEnum.NotEqual;
+                }
+                else if (currentWord == "=")
+                {
+                    Token = TokenEnum.Equal;
                 }
                 else if (currentWord == "ag")
                 {

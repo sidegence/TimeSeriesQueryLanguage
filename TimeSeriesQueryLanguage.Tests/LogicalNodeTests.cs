@@ -44,6 +44,25 @@ namespace TimeSeriesQueryLanguage.Tests
 
         [Test]
         [Repeat(1000)]
+        [TestCase("!")]
+        [TestCase("=")]
+        public async Task OperatorsWith2ArgumentsTests3(string op)
+        {
+            var p1 = Random.Next(1, 100) < 50;
+            var p2 = Random.Next(1, 100) < 50;
+            string s = $"{op}({Convert.ToDecimal(p1)},{Convert.ToDecimal(p2)})";
+            var e = await Parser.Set(s).Parse()!.Eval(I42);
+            Console.WriteLine($"{s} : {e}");
+            e.Should().Be(op switch
+            {
+                "!" => Convert.ToDecimal(p1 != p2),
+                "=" => Convert.ToDecimal(p1 == p2),
+                _ => throw new NotImplementedException()
+            });
+        }
+
+        [Test]
+        [Repeat(1000)]
         [TestCase("in")]
         [TestCase("inc")]
         [TestCase("dec")]

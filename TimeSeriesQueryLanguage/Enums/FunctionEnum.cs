@@ -7,7 +7,7 @@
     }
     public enum ArgFunctionEnum
     {
-        And, Or,
+        And, Or, NotEqual, Equal,
         V1mV2,
         V1lV2,
         V1inV2V3,

@@ -58,6 +58,8 @@ namespace TimeSeriesQueryLanguage.Core
                 case TokenEnum.Add:
                 case TokenEnum.And:
                 case TokenEnum.Or:
+                case TokenEnum.NotEqual:
+                case TokenEnum.Equal:
                 case TokenEnum.V1mV2:
                 case TokenEnum.V1lV2:
                 case TokenEnum.Scale:
@@ -171,6 +173,8 @@ namespace TimeSeriesQueryLanguage.Core
                         case TokenEnum.Add:
                         case TokenEnum.And:
                         case TokenEnum.Or:
+                        case TokenEnum.NotEqual:
+                        case TokenEnum.Equal:
                         case TokenEnum.V1mV2:
                         case TokenEnum.V1lV2:
                         case TokenEnum.Scale:
@@ -191,6 +195,8 @@ namespace TimeSeriesQueryLanguage.Core
                     case TokenEnum.Add: return new AddNode(args);
                     case TokenEnum.And: return new AndNode(args);
                     case TokenEnum.Or: return new OrNode(args);
+                    case TokenEnum.NotEqual: return new NotEqualNode(args);
+                    case TokenEnum.Equal: return new EqualNode(args);
                     case TokenEnum.V1mV2: return new V1mV2Node(args);
                     case TokenEnum.V1lV2: return new V1lV2Node(args);
                     case TokenEnum.Scale: return new ScaleNode(args);
@@ -233,6 +239,8 @@ namespace TimeSeriesQueryLanguage.Core
             {
                 case ArgFunctionEnum.And: return $"&({Rnd(level)},{Rnd(level)})";
                 case ArgFunctionEnum.Or: return $"|({Rnd(level)},{Rnd(level)})";
+                case ArgFunctionEnum.NotEqual: return $"!({Rnd(level)},{Rnd(level)})";
+                case ArgFunctionEnum.Equal: return $"=({Rnd(level)},{Rnd(level)})";
                 case ArgFunctionEnum.V1mV2: return $"<({Rnd(level)},{Rnd(level)})";
                 case ArgFunctionEnum.V1lV2: return $">({Rnd(level)},{Rnd(level)})";
                 case ArgFunctionEnum.V1inV2V3: return $"in({Rnd(level)},{Rnd(level)},{Rnd(level)})";

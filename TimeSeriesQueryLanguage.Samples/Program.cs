@@ -52,6 +52,10 @@ Console.WriteLine("Dlt 5min > Dlt All ...: " + await i3.Eval(">(ag(Dlt,price,Fr.
 Console.WriteLine("Dlt 5min < Dlt All ...: " + await i3.Eval("<(ag(Dlt,price,Fr.M5,To.Zero),ag(Dlt,price,Fr.C1,To.Zero))"));
 
 Console.WriteLine($"hod({await i3.Eval("hod")}) dow({await i3.Eval("dow")}) dom({await i3.Eval("dom")}) moy({await i3.Eval("moy")})");
+
+Console.WriteLine($"=(1,1):{await i3.Eval("=(1,1)")} =(0,0):{await i3.Eval("=(0,0)")} =(1,0):{await i3.Eval("=(1,0)")}");
+Console.WriteLine($"!(1,1):{await i3.Eval("!(1,1)")} !(0,0):{await i3.Eval("!(0,0)")} !(1,0):{await i3.Eval("!(1,0)")}");
+
 Console.WriteLine();
 
 async Task PopulateDb(int n)
